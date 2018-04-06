@@ -21,3 +21,6 @@ here the first column depicts the cell of interest and the second column the lab
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/cellneighbours.png)
 
 
+4. `View individual cell or a set of cells in isolation`
+
+![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/seesingleormultiplecells.png)
