@@ -6,30 +6,30 @@ The Wolfram Language implementation of the overlap-based cell tracker is based o
 
 Here are a few capabilities that i have introduced on top of "Lineage Mapper"
 
-# 1. `Segment and Track a group of cells`
+## 1. `Segment and Track a group of cells`
 
 ![alt text]
 
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/benoitsmask.gif) | ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/benoitsmasksegtracked.gif)
 
-# 2. `View the displacements of cells`
+## 2. `View the displacements of cells`
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/centroiddispmap.png)
 
-# 3. `Get Information about cell neighbours for a particular time`
+## 3. `Get Information about cell neighbours for a particular time`
 
 *****here the first column depicts the cell of interest and the second column the labels of its neighbours*****
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/cellneighbours.png)
 
 
-# 4. `View individual cell or a set of cells in isolation`
+## 4. `View individual cell or a set of cells in isolation`
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/seesingleormultiplecells.png)
 
 
-# 5. `Tracking an Edge`
+## 5. `Tracking an Edge`
 
 ****shown in red****
 
