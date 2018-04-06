@@ -10,7 +10,7 @@ https://pages.nist.gov/Lineage-Mapper/
 
 ##### `To do:`
 ###### * make edge tracking faster
-###### * add confidence index for the tracked cells (easy to implement -> pure laziness)
+###### * add confidence index for the tracked cells (easy to implement -> pure laziness). This will handle apoptosis as well.
 
 
 Here are a few capabilities of "Lineage Mapper" and some the functionality on top
