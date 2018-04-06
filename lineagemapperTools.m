@@ -44,7 +44,7 @@ Begin["`Private`"];
 
 
 Options[neighboursQuery]={"option" -> "Neighbors"};
-neighboursQuery[labeledMat_, OptionsPattern[]]:= ComponentMeasurements[labeledMat~Dilation~1, OptionValue@"option"];
+neighboursQuery[labeledMat_, OptionsPattern[]]:= Dataset@<|ComponentMeasurements[labeledMat~Dilation~1, OptionValue@"option"]|>;
 
 
 lineageTable[linkage_] := Dataset@DeleteMissing[
