@@ -7,4 +7,4 @@ Here are a few capabilities that i have introduced on top of "Lineage Mapper"
 
 1. Segment and Track a group of cells
 
-(alt text)[https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/benoitsmask.gif]
+![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/benoitsmask.gif)
