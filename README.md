@@ -31,7 +31,7 @@ Here are a few capabilities that i have introduced on top of "Lineage Mapper"
 
 5. `Tracking an Edge`
 
-*****shown in red*****
+****shown in red****
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/benoitedgetrack.gif)
 
