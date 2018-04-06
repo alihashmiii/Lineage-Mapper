@@ -4,9 +4,10 @@ The Wolfram Language implementation of the overlap-based cell tracker is based o
 
 ****Note: The implementation is not easy to read and understand unless you have a good deal of understanding of and familiarity with functional, pattern matching and rule-based programming and the standard and non-standard evaluation sequence in the Wolfram Language. So if you wish to use it or add some functionality, please do not hesistate to ask. Moreover, as of now, I have not implemented the case when fusions or mergers of cells is desired by the users, since fusion of cells is usually not the case of interest****
 
-##### To do:
+##### `To do:`
 ###### * make edge tracking faster
 ###### * add confidence index for the tracked cells (easy to implement -> pure laziness)
+
 
 
 
