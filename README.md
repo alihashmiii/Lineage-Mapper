@@ -8,11 +8,11 @@ Here are a few capabilities that i have introduced on top of "Lineage Mapper"
 
 #### 1. `Segment and Track a group of cells`
 
-##### * example 1
+* ##### example 1
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/alain.gif)
 
-##### * example 2
+* ##### example 2
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/benoitsmask.gif) | ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/benoitsmasksegtracked.gif)
 
