@@ -1,4 +1,5 @@
 # Lineage-Mapper
+@Author: Ali Hashmi
 
 The Wolfram Language implementation of the overlap-based cell tracker is based on an article by `Chalfoun et al, Scientific Reports, 2016`. The algorithm can robustly track cells, correct for any incorrect mergers/fusions of cells in an automated fashion and detect possible mitotic events using stringent criterions for mother/daughter cells. The algorithm used for tracking is not specific to the segmentation scheme, which indeed is a great thing and makes lineage mapper more robust than many tracking schemes out there ! (Read the article for more detail). In short, the tracking scheme uses a minimization scheme over a cost matrix. In this implementation, I have used a graph theoretic approach to generate the same results.
 
