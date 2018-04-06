@@ -39,5 +39,8 @@ Here are a few capabilities that i have introduced on top of "Lineage Mapper"
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/benoitedgetrack.gif)
 
 
+#### 6. `Incorrect Fusions are dealt with`
+
+![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/maskcorrections.png)
 
 
