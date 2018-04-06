@@ -47,6 +47,8 @@ Sometimes during segmentation neighbouring cells can fuse together to form a sin
 
 #### 7. `Generate Lineage Table/Tree and BirthDeath Table`
 
+**we can get the parent-daughter associations in form of either a table or a graph.**
+
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/tablesandtrees.png)
 
 
