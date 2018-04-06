@@ -10,10 +10,7 @@ The Wolfram Language implementation of the overlap-based cell tracker is based o
 ###### * add confidence index for the tracked cells (easy to implement -> pure laziness)
 
 
-
-
-
-Here are a few capabilities that i have introduced on top of "Lineage Mapper"
+Here are a few capabilities of "Lineage Mapper" and some the functionality on top
 
 #### 1. `Segment and Track a group of cells`
 
