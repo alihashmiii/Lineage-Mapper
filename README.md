@@ -16,6 +16,8 @@ Here are a few capabilities that i have introduced on top of "Lineage Mapper"
 
 3. `Get Information about cell neighbours for a particular time`
 
+here the first column depicts the cell of interest and the second column the labels of its neighbours
+
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/cellneighbours.png)
 
 
