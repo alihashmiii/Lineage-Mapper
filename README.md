@@ -34,7 +34,7 @@ Here are a few capabilities that i have introduced on top of "Lineage Mapper"
 
 #### 5. `Tracking an Edge`
 
-****shown in red****
+##### ****shown in red****
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/benoitedgetrack.gif)
 
@@ -52,6 +52,11 @@ Sometimes during segmentation neighbouring cells can fuse together to form a sin
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/tablesandtrees.png)
 
 
-**Note: the death toll for now is comprised of only those cells that are unassigned from the previous frame. This can change if one uses the centroid informations of the tracked cells. Notably, cells that do not move much across multiple frames can be considered dead.**
+##### **Note: the death toll for now is comprised of only those cells that are unassigned from the previous frame. This can change if one uses the centroid informations of the tracked cells. Notably, cells that do not move much across multiple frames can be considered dead.**
+
+
+#### 8. `Cell as Regions for Computatitons`
+
+#####
 
 
