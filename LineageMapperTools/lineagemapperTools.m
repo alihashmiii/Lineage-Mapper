@@ -7,19 +7,21 @@
 BeginPackage["LineageMapperTools`"];
 
 
-neighboursQuery::usage = "given a labeled matrix the function can be used to determine either the \"Neighbours\" or the \"NeighbourCount\".
-option -> Neighbor || NeighborCount";
+neighboursQuery::usage = "given a labeled matrix the function can be used to determine either the \"Neighbours\" or the
+\"NeighbourCount\". option -> Neighbor || NeighborCount";
 
 
-lineageTable::usage = "construct a table of parents and daughters along with the frame number prior division. For the function provide the
- second argument/result from LineageMapper";
+lineageTable::usage = "construct a table of parents and daughters along with the frame number prior division. For the function
+provide the second argument/result from LineageMapper";
 
 
-centroidMap::usage = "centroidMap[segments] takes in the segmented stacks to plot the displacement of either the entire cell population or a selection of cells
-specified by the user that survive some x duration (integer). The option for example is provided as \"cutoffLength\" -> 3 ";
+centroidMap::usage = "centroidMap[segments] takes in the segmented stacks to plot the displacement of either the entire cell
+population or a selection of cells specified by the user that survive some x duration (integer). The option for example is
+provided as \"cutoffLength\" -> 3 ";
 
 
-birthDeathFrameRecord::usage = "birthDeathFrameRecord[segments_] takes the segmented stacks and for each cell index outputs the birth and death frame"
+birthDeathFrameRecord::usage = "birthDeathFrameRecord[segments_] takes the segmented stacks and for each cell index outputs
+the birth and death frame"
 
 
 lineageTree::usage = "given the linkages (2nd arg) of the result from LineageMapper` plot a Lineage Tree of the cell population";
@@ -29,8 +31,8 @@ cellTrackMov::usage = "cellTrackMov[segments_, index_] generates a movie for a s
 To have a cropped movie use \"cropped\" -> True. The option is set to False by default";
 
 
-cellMesh::usage = "cellMesh[segments_,index_] generates a geometric mesh for a cell index either embedded in the image coordinates or cropped.
-To have the mesh embedded in the coordinate system use \"cropped\" -> False. The option is True by default";
+cellMesh::usage = "cellMesh[segments_,index_] generates a geometric mesh for a cell index either embedded in the image
+coordinates or cropped. To have the mesh embedded in the coordinate system use \"cropped\" -> False. The option is True by default";
 
 
 cellExtract::usage = "cellExtract[segments_, index_] extracts specific cell(s) from the segmented image-stack";
