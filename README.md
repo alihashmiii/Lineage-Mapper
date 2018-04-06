@@ -7,4 +7,8 @@ Here are a few capabilities that i have introduced on top of "Lineage Mapper"
 
 1. Segment and Track a group of cells
 
+binarized mask
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/benoitsmask.gif)
+
+after segmentation and tracking
+![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/benoitsmasksegtracked.gif)
