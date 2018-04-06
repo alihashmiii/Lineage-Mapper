@@ -22,12 +22,14 @@ Here are a few capabilities that i have introduced on top of "Lineage Mapper"
 
 #### 3. `Get Information about cell neighbours for a particular time`
 
-*****here the first column depicts the cell of interest and the second column the labels of its neighbours*****
+##### **here the first column depicts the cell of interest and the second column the labels of its neighbours**
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/cellneighbours.png)
 
 
 #### 4. `View individual cell or a set of cells in isolation`
+
+##### we can isolate cell(s) from the mask for better viewing 
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/seesingleormultiplecells.png)
 
@@ -41,7 +43,7 @@ Here are a few capabilities that i have introduced on top of "Lineage Mapper"
 
 #### 6. `Incorrect Fusions are dealt with`
 
-Sometimes during segmentation neighbouring cells can fuse together to form a single cell. This behaviour is in most cases not desired. Lineage Mapper can break such clusters of cells.
+##### Sometimes during segmentation neighbouring cells can fuse together to form a single cell. This behaviour is in most cases not desired. Lineage Mapper can break such clusters of cells.
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/maskcorrections.png)
 
@@ -57,6 +59,7 @@ Sometimes during segmentation neighbouring cells can fuse together to form a sin
 
 #### 8. `Cell as Regions for Computatitons`
 
-#####
+##### cells as image can be converted to regions which can be further used for computations (solving PDEs etc..)
 
+![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/solveequations%20over%20a%20cell.png)
 
