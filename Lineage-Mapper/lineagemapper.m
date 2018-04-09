@@ -7,9 +7,10 @@
 BeginPackage["LineageMapper`",{"segmentStack`"}];
 
 
-cellTracker::usage = "cellTracker implements an overlap-based algorithm for tracking cells in timelapse images. The algorithm is able to robustly track cell movements
-across frames independently of the segmentation scheme employed, detects mitotic events and corrects any incorrect mergers of cells in confluent conditions. Both binarized masks
-or labelled matrices can be provided to this particular implementation. The output is in the form of relabelled matrices identifying the cells with unique labels.
+cellTracker::usage = "cellTracker implements an overlap-based algorithm for tracking cells in timelapse images. The algorithm is able
+to robustly track cell movements across frames independently of the segmentation scheme employed, detects mitotic events and corrects
+any incorrect mergers of cells in confluent conditions. Both binarized masks or labelled matrices can be provided to this particular
+implementation. The output is in the form of relabelled matrices identifying the cells with unique labels.
 
 Note: the algorithm is based on the approach proposed by Chalfoun et al. Scientific Reports, 2016.";
 
@@ -18,9 +19,9 @@ Note: the algorithm is based on the approach proposed by Chalfoun et al. Scienti
 (*params*)
 
 
-Options[cellTracker] = {"segmented" -> False, "overlapW" -> 1, "sizeW" -> 0.2, "centroidW" -> 0.5, "maxCentDist" -> 50.0, "mincellsize" -> 100,
-"criteria"-> {"on","on"}, "pdthreshoverlap" -> 0.2, "sizeSimilarity" -> 0.5, "aspectSimilarity" -> 0.7, "parentCircularity" -> 0.3,
-"frameCircularitycheck" -> 5, "fusionOverlapThresh" -> 0.2};
+Options[cellTracker] = {"segmented" -> False, "overlapW" -> 1, "sizeW" -> 0.2, "centroidW" -> 0.5, "maxCentDist" -> 50.0,
+"mincellsize" -> 100, "criteria"-> {"on","on"}, "pdthreshoverlap" -> 0.2, "sizeSimilarity" -> 0.5, "aspectSimilarity" -> 0.7,
+"parentCircularity" -> 0.3, "frameCircularitycheck" -> 5, "fusionOverlapThresh" -> 0.2};
 
 
 (* ::Subsection:: *)
@@ -85,8 +86,8 @@ centCompiled = Compile[{{centDiffMat, _Real, 2},{threshold, _Real}},
 *)
 
 
-(* as the name implies, costMatrix generates the cost of traversing between an object @t and @t+1. More metrics e.g. texture metrics can be added.
-In fact an arbitrary # of user defined metrics can be incorporated to compute the cost *)
+(* as the name implies, costMatrix generates the cost of traversing between an object @t and @t+1. More metrics e.g.
+texture metrics can be added. In fact an arbitrary # of user defined metrics can be incorporated to compute the cost *)
 costMatrix[segPrev_,segCurr_,overlapMat_, OptionsPattern[cellTracker]]:= Module[{centroidPrev,centroidCurr, centroidDiffMat,
 areaPrev,areaCurr, nCol,nRow, overlapTerm,costMat,pos,centroidTerm,sizeTerm,spArrayOverlap,spArraycentDiff,mask,
 overlapW = OptionValue@"overlapW", sizeW = OptionValue@"sizeW", centroidW = OptionValue@"centroidW", 
@@ -101,8 +102,10 @@ overlapTerm = overlapCompiled[overlapMat,areaPrev,areaCurr]; (* optimized for sp
 sizeTerm = sizeCompiled[areaPrev,areaCurr]; (* optimized for speed to compute sizeTerm *)
 
 spArrayOverlap = SparseArray[overlapTerm, Automatic, 1.]; (* finding positions in overlapTerm where cells intersect *)
-spArraycentDiff = SparseArray[UnitStep[maxCentDist - centroidDiffMat], Automatic, 0]; (* finding positions in centDiffMat for dist within maxCentDist *)
-pos = spArrayOverlap["NonzeroPositions"]~Union~spArraycentDiff["NonzeroPositions"]; (* positions where overlaps occur or centroids within maxCentDist *)
+spArraycentDiff = SparseArray[UnitStep[maxCentDist - centroidDiffMat], Automatic, 0]; (* finding positions in centDiffMat for
+dist within maxCentDist *)
+pos = spArrayOverlap["NonzeroPositions"]~Union~spArraycentDiff["NonzeroPositions"]; (* positions where overlaps occur or centroids
+within maxCentDist *)
 mask = SparseArray[pos->1,{nRow,nCol},\[Infinity]]; (* creating the mask for costMat *)
 mask*(overlapW*overlapTerm + centroidW*centroidTerm + sizeW*sizeTerm)
 ];
@@ -130,7 +133,8 @@ SparseArray[Unitize@Map[If[Min[#]==Infinity,constInfArray ,# - Min[#]]& , costMa
 (*Mitosis Check*)
 
 
-(* subF[] with its HoldFirst attribute creates isTrueDivision[] to check whether the daughters meet the criteria *)SetAttributes[subF,HoldFirst];
+(* subF[] with its HoldFirst attribute creates isTrueDivision[] to check whether the daughters meet the criteria *)
+SetAttributes[subF,HoldFirst];
 subF[body_]:= Block[{seg,parent,daughterpair},
 With[{$boundingCurr = Unevaluated@Values@ComponentMeasurements[seg, "SemiAxes"]},
      SetDelayed@@(Hold[isTrueDivision[seg_][parent_, daughterpair_],
@@ -151,7 +155,8 @@ initializeF[OptionsPattern@cellTracker] := Block[{parent, daughterpair, seg, asp
    {"off","off"},
     SetDelayed@@(Hold[isTrueDivision[seg_][parent_, daughterpair_], True]),
     {"on", "off"},
-    SetDelayed@@(Hold[isTrueDivision[seg_][parent_, daughterpair_], (1 - Abs[Subtract@@areas/Total@areas] >= sizeSim)] /. Unevaluated -> Sequence),
+    SetDelayed@@(Hold[isTrueDivision[seg_][parent_, daughterpair_],
+    (1 - Abs[Subtract@@areas/Total@areas] >= sizeSim)] /. Unevaluated -> Sequence),
     {"off", "on"},
      subF[(1 - Abs[Subtract@@aspectr$/Total@aspectr$] >= aspectSim)],
      {"on", "on"},
@@ -162,11 +167,13 @@ initializeF[OptionsPattern@cellTracker] := Block[{parent, daughterpair, seg, asp
 
 
 (* checkDivision[ ] yields any mitotic events if they pass the stringent criterion *)
-checkDivision[costMat_,overlapMat_,segCurr_,segPrev_, trackvector_, colwisemap_,OptionsPattern@cellTracker]:= With[{pdthreshoverlap = OptionValue@"pdthreshoverlap",
-circularityframeCheck = OptionValue@"frameCircularitycheck",parentcircThresh = OptionValue@"parentCircularity"},
+checkDivision[costMat_,overlapMat_,segCurr_,segPrev_, trackvector_, colwisemap_,OptionsPattern@cellTracker]:= With[{
+pdthreshoverlap = OptionValue@"pdthreshoverlap", circularityframeCheck = OptionValue@"frameCircularitycheck", 
+parentcircThresh = OptionValue@"parentCircularity"},
 Module[{potentialparentstodaughter,
-potentialDPoverlap,indices, multipledaughterspairs, parents, selcosts, getcosts,selpos,parentsKeys,selpairsAssociation,PtoFmapping,FtoPmapping,
-multimappings,mothercircularity,combinedFrameHist, areaCurr,areaPrev, isTrueDivisionQ,picks,daughtermappingOtherCells,mappeddaughters,trueElems},
+potentialDPoverlap,indices, multipledaughterspairs, parents, selcosts, getcosts,selpos,parentsKeys,selpairsAssociation,
+PtoFmapping,FtoPmapping,multimappings,mothercircularity,combinedFrameHist,areaCurr,areaPrev,isTrueDivisionQ,picks,
+daughtermappingOtherCells,mappeddaughters,trueElems},
 
 areaCurr = Values@ComponentMeasurements[segCurr,"Area"];
 areaPrev = Values@ComponentMeasurements[segPrev,"Area"];
@@ -232,7 +239,8 @@ Extract[potentialparentstodaughter,Position[picks,True]]/.Rule-> List
 
 
 (* identifyFusions[] gives the possible indices of cells @t that merged @t+1. *)
-identifyFusions[currSeg_,prevSeg_,overlapMat_,trackvector_,OptionsPattern@cellTracker]:= With[{fusionOverlapThresh = OptionValue["fusionOverlapThresh"]},
+identifyFusions[currSeg_,prevSeg_,overlapMat_,trackvector_,OptionsPattern@cellTracker]:= With[{
+fusionOverlapThresh = OptionValue["fusionOverlapThresh"]},
 Module[{fmatrix, fvector,
 nrow, ncol, nullcandidates, areaprev= Values@ComponentMeasurements[prevSeg,"Area"], indices},
 nrow = Length@areaprev;
@@ -274,17 +282,21 @@ breakingFusion[{currSeg_,daughters_},prevSeg_,parentkeys_,OptionsPattern@cellTra
  (* change blob index to the new index i.e. newlabelblob and conflicts to syms *)
   replaceRulesCurr = {Thread[blobind -> newlabelblob]}~Join~Thread[conflicts -> symindices];
   tempSeg =  Replace[currSeg,replaceRulesCurr,{2}];
-  blobpos = SparseArray[Unitize[newlabelblob - tempSeg]/. _Unitize -> 1,Automatic, 1]["NonzeroPositions"]; (* position of blob in current frame *) 
+  (* position of blob in current frame *) 
+  blobpos = SparseArray[Unitize[newlabelblob - tempSeg]/. _Unitize -> 1,Automatic, 1]["NonzeroPositions"]; 
   
+  (* split blobs into parts *) 
   tempSeg = Block[{mask, modifiedseg, row = First@Dimensions[prevSeg], col = Last@Dimensions[currSeg]},
   Fold[(intersectionpos = blobpos \[Intersection] SparseArray[Unitize[#2 - prevSeg], Automatic, 1]["NonzeroPositions"];
   mask = SparseArray[(t[$i++] = intersectionpos) -> 1, {row,col}];
   #2 mask + (1 - mask) #)&, tempSeg, cluster]
   ];
   
-  unassignedpos = SparseArray[Unitize[newlabelblob - tempSeg]/._Unitize -> 1,Automatic,1]["NonzeroPositions"]; (* residual part of blob *)
+  unassignedpos = SparseArray[Unitize[newlabelblob - tempSeg]/._Unitize -> 1,Automatic,1]["NonzeroPositions"]; 
+  (* residual part of blob *)
   nf = Nearest@Flatten@MapThread[Thread[#1->#2]&,{Array[t,$i-1],cluster}];
-  replaceResidual = Replace[Map[#->nf[#,1]&, unassignedpos], HoldPattern[p:{_,_}-> {x_}]:> p -> x,{1}]; (* assign nearest label to residual position *)
+  replaceResidual = Replace[Map[#->nf[#,1]&, unassignedpos], HoldPattern[p:{_,_}-> {x_}]:> p -> x,{1}]; 
+  (* assign nearest label to residual position *)
   tempSeg = ReplacePart[tempSeg,replaceResidual]; (* replace residual *)        
   
   (* rename symbols to integer labels *)   
@@ -317,9 +329,9 @@ breakingFusion[{currSeg_,daughters_},prevSeg_,parentkeys_,OptionsPattern@cellTra
 (*The Assignment Problem*)
 
 
-(* the function operates on the cost matrix etc.. to create a mapping between the source and target cells if any. Any unassigned cells @t are either
-dead or mitotic mother cells. Similarly any unassigned cells @t+1 either enter the FOV or are daughters. Fused cells once broken maintain their original
-labels. Here we use a graph with edgeweights to find unique mappings *)
+(* the function operates on the cost matrix etc.. to create a mapping between the source and target cells if any.
+Any unassigned cells @t are either dead or mitotic mother cells. Similarly any unassigned cells @t+1 either enter the FOV or are
+daughters. Fused cells once broken maintain their original labels. Here we use a graph with edgeweights to find unique mappings *)
 assignmentFunc[segCurr_,trackvector_,costMat_, splitcells_,mdpairs_,truePrevKeys_]:= Module[{segmentCurr= segCurr,
 currframelabels, currlabelsUntracked, daughters, mothers, realindices,artificialInds,newlabels,assignmentsList,
 ruleAssigned, currentassigned, currentunassigned, newcells, maxlabelprev,newcellAssignmentRules,allAssignmentRules,
@@ -331,7 +343,8 @@ currframelabels=Keys@ComponentMeasurements[segCurr,"Label"];
 daughters = Flatten@daughters;
 currlabelsUntracked = Complement[currframelabels,Join[daughters,Flatten@splitcells]];
 
-otherassoc= Sort@Flatten@KeyValueMap[Thread@*Rule,DeleteCases[colwiseMins[costMat]@Identity,x_/;Length@x>1]]; (* other possible associations using columnwise mins *)
+otherassoc= Sort@Flatten@KeyValueMap[Thread@*Rule,DeleteCases[colwiseMins[costMat]@Identity,x_/;Length@x>1]]; 
+(* other possible associations using columnwise mins *)
 rules=Sort@DeleteDuplicates[Join[trackvector,otherassoc]]; 
 artificialInds = rules/.Rule -> List;
 previnds = Part[truePrevKeys,artificialInds[[All,1]] ];
@@ -413,8 +426,8 @@ keeplabelsRules,flattenDaughters, Dlabelchanges},
    (x_/; x =!={} :> Transpose[x]), _?(#=={}&) :> {{},{}}};
   mdpairs = Thread[{mothersFindex,daughters}];
   flattenDaughters = Flatten@daughters;
-  (* if mitotic events exist then replace the rows for the costmatrix and the columns (daughters) with \[Infinity] and for overlap matrix with 0. 
-  This removes all possible paths from parents to cells @t+1 and for cells @t to reach daughters  *)
+  (* if mitotic events exist then replace the rows for the costmatrix and the columns (daughters) with \[Infinity] and
+  for overlap matrix with 0. This removes all possible paths from parents to cells @t+1 and for cells @t to reach daughters  *)
   updateMat[costMat,mothersFindex,daughters,"cost"]; (* modifying cost matrix in place *)
   updateMat[overlaps,mothersFindex,daughters,"overlap"]; (* modifying overlap matrix in place *) 
   (* updateMat[#1,mothersFindex,daughters,#2]&@@@{{costMat,"cost"},{overlaps,"overlaps"}}; *)
@@ -425,9 +438,11 @@ keeplabelsRules,flattenDaughters, Dlabelchanges},
   fusionsTindex = Map[Part[truePrevkeys,#]&, fusionsFindex,{3}];
   splits = Values@fusionsTindex;
    
-  (* breaking incorrectly fused clusters. this will create new cells in the current frame. the cost matrix and overlap matrix need to be recomputed: CHANGE THIS STRING *)
+  (* breaking incorrectly fused clusters. this will create new cells in the current frame. the cost matrix and overlap
+  matrix need to be recomputed *)
   If[fusionsTindex != {},
-   {{segmentCurr,flattenDaughters},Dlabelchanges} = Reap@Fold[breakingFusion[#,segmentPrev,truePrevkeys][#2]&,{segmentCurr,flattenDaughters},fusionsTindex];
+   {{segmentCurr,flattenDaughters},Dlabelchanges} = Reap@Fold[breakingFusion[#,segmentPrev,truePrevkeys][#2]&,
+   {segmentCurr,flattenDaughters},fusionsTindex];
    
    If[Dlabelchanges != {}, 
    daughters = Replace[daughters,Flatten@Dlabelchanges,{2}];
