@@ -66,7 +66,7 @@ Here are a few capabilities of "Lineage Mapper" and some the functionality on to
 ##### **Note: the death toll for now is comprised of only those cells that are unassigned from the previous frame. This can change if one uses the centroid informations of the tracked cells. Notably, cells that do not move much across multiple frames can be considered dead.**
 
 
-#### 8. `Cell as Regions for Computatitons`
+#### 8. `Cell as Regions for Computations`
 
 ##### cells as image can be converted to regions which can be further used for computations (solving PDEs etc..)
 
