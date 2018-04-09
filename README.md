@@ -52,7 +52,7 @@ Here are a few capabilities of "Lineage Mapper" and some the functionality on to
 
 #### 6. `Incorrect Fusions are dealt with`
 
-##### Sometimes during segmentation neighbouring cells can fuse together to form a single cell. This behaviour is in most cases not desired. Lineage Mapper can break such clusters of cells.
+##### Sometimes during segmentation neighbouring cells can fuse together to form a single cell. This behaviour is in most cases not desired. Lineage Mapper can break such clusters of cells
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/maskcorrections.png)
 
