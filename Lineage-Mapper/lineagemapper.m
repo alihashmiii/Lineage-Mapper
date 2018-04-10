@@ -308,7 +308,6 @@ breakingFusion[{currSeg_,daughters_},prevSeg_,parentkeys_,OptionsPattern@cellTra
   If[symDs != {}, 
   newDaughterLab = Cases[rules,PatternSequence[Alternatives@@symDs -> ind_]:> ind];
   DaughterLabChange = Thread[oldDaughterLab -> newDaughterLab];
-  Sow[DaughterLabChange]
   ]; 
   tempSeg = Replace[tempSeg,rules,{2}]  
   ];
@@ -441,10 +440,9 @@ keeplabelsRules,flattenDaughters, Dlabelchanges},
   (* breaking incorrectly fused clusters. this will create new cells in the current frame. the cost matrix and overlap
   matrix need to be recomputed *)
   If[fusionsTindex != {},
-   {{segmentCurr,flattenDaughters},Dlabelchanges} = Reap@Fold[breakingFusion[#,segmentPrev,truePrevkeys][#2]&,
-   {segmentCurr,flattenDaughters},fusionsTindex];
+   {segmentCurr,flattenDaughters}=Fold[breakingFusion[#,segmentPrev,truePrevkeys][#2]&,{segmentCurr,flattenDaughters},fusionsTindex];
    
-   If[Dlabelchanges != {}, 
+   If[flattenDaughters != {}, 
    daughters = Replace[daughters,Flatten@Dlabelchanges,{2}];
    flattenDaughters = Flatten@daughters;
    mdpairs = Thread[{mothersFindex,daughters}]
