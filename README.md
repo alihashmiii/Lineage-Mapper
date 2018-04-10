@@ -58,7 +58,7 @@ Here are a few capabilities of "Lineage Mapper" and some the functionality on to
 
 #### 7. `Generate Lineage Table/Tree and BirthDeath Table`
 
-##### **we can get the parent-daughter associations in form of either a table or a graph.**
+##### **we can get the parent-daughter associations in form of either a table or a graph**
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/tablesandtrees.png)
 
