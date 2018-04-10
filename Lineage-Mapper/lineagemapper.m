@@ -440,14 +440,13 @@ keeplabelsRules,flattenDaughters, Dlabelchanges},
   (* breaking incorrectly fused clusters. this will create new cells in the current frame. the cost matrix and overlap
   matrix need to be recomputed *)
   If[fusionsTindex != {},
-   {segmentCurr,flattenDaughters}=Fold[breakingFusion[#,segmentPrev,truePrevkeys][#2]&,{segmentCurr,flattenDaughters},fusionsTindex];
+   {segmentCurr,flattenDaughters} = Fold[breakingFusion[#,segmentPrev,truePrevkeys][#2]&,{segmentCurr,flattenDaughters},fusionsTindex];
    
    If[flattenDaughters != {}, 
-   daughters = Replace[daughters,Flatten@Dlabelchanges,{2}];
-   flattenDaughters = Flatten@daughters;
-   mdpairs = Thread[{mothersFindex,daughters}]
+    daughters = Partition[flattenDaughters,2];
+    mdpairs = Thread[{mothersFindex,daughters}]
    ];
-   ];
+  ];
 
   If[fusionsTindex != {} || mothersFindex != {},
    indicestokeep = daughters~Join~splits;
