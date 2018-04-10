@@ -60,7 +60,7 @@ Here are a few capabilities of "Lineage Mapper" and some the functionality on to
 
 ##### **we can get the parent-daughter associations in form of either a table or a graph**
 
-
+![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/tablesandtrees.png)
 
 
 ##### **Note: the death toll for now is comprised of only those cells that are unassigned from the previous frame. This can change if one uses the centroid informations of the tracked cells. Notably, cells that do not move much across multiple frames can be considered dead.**
