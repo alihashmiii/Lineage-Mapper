@@ -304,7 +304,7 @@ breakingFusion[{currSeg_,daughters_},prevSeg_,parentkeys_,OptionsPattern@cellTra
   keys = DeleteCases[Keys@*Counts@*Flatten@tempSeg, 0];
   newLabels = Complement[Range[Length@keys], keys];
   toreplace = Cases[keys,_Symbol];
-  rules = Thread[toreplace -> RandomSample[newLabels,Length@toreplace]];
+  rules = Thread[toreplace -> Take[newLabels,Length@toreplace]];
   If[symDs != {}, 
   newDaughterLab = Cases[rules,PatternSequence[Alternatives@@symDs -> ind_]:> ind];
   DaughterLabChange = Thread[oldDaughterLab -> newDaughterLab];
