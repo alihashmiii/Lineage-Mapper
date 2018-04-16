@@ -37,6 +37,7 @@ coordinates or cropped. To have the mesh embedded in the coordinate system use \
 
 cellExtract::usage = "cellExtract[segments_, index_] extracts specific cell(s) from the segmented image-stack";
 
+confidenceIndex::usage = "confidenceIndex[seg_,mincelllife_:32,dilationfact_:2] generates a confidence index for the tracked cells"
 
 (* ::Subsection:: *)
 (*Functions*)
@@ -134,7 +135,7 @@ confidenceWrapper[seg_,arg_,prop_,func_]:= GroupBy[
  ];
 
 SetAttributes[confidenceIndex, HoldAll];
-confidenceIndex[seg_,mincelllife_,dilationfact_]:= Block[{a,b,c},
+confidenceIndex[seg_,mincelllife_:32,dilationfact_:2]:= Block[{a,b,c},
  a =confidenceWrapper[seg, #, "AdjacentBorderCount",If[#, 0, 1]&@*MemberQ[1]];
  b = Function[1/(#+1)]@ confidenceWrapper[seg,Unevaluated@Dilation[#,dilationfact],"Neighbors",Composition[Length,Union,Flatten]]; 
  c = confidenceWrapper[seg, #, "Label",If[#>=mincelllife, 1, 0]&@*Length];
