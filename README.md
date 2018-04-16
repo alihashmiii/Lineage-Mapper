@@ -10,6 +10,7 @@ https://pages.nist.gov/Lineage-Mapper/
 
 ##### `To do:`
 ###### * 1. make edge tracking faster
+###### * 2. allow cells to fuse if fusion is desired.
 
 
 
