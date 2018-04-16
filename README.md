@@ -13,7 +13,7 @@ https://pages.nist.gov/Lineage-Mapper/
 
 
 
-Here are a few capabilities of "Lineage Mapper" and some the functionality on top
+Shown below are a few capabilities of "Lineage Mapper" and some of the additional functionality
 
 #### 1. `Segment and Track a group of cells`
 
