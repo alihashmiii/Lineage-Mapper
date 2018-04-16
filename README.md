@@ -63,8 +63,7 @@ Shown below are a few capabilities of "Lineage Mapper" and some of the additiona
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/tablesandtree.png)
 
 
-##### **Note: the death toll is comprised of only those cells that are unassigned from the previous frame. This can change if one uses the centroid information of the tracked cells. Notably, cells that do not move much across multiple frames can be considered dead.
-Information about apoptosis can be obtained separately (using LineageMapperTools.m) **
+##### **Note: the death toll is comprised of only those cells that are unassigned from the previous frame. This can change if one uses the centroid information of the tracked cells. Notably, cells that do not move much across multiple frames can be considered dead. Information about apoptosis can be obtained separately (using LineageMapperTools.m) **
 
 
 #### 8. `Cell as Regions for Computations`
