@@ -139,7 +139,7 @@ gWrapper[seg_,arg_,prop_,func_]:= GroupBy[
 
 SetAttributes[confidenceIndex, HoldAll];
 confidenceIndex[seg_,mincelllife_:32,dilationfact_:2]:= Block[{a,b,c},
- a =gWrapper[seg, #, "AdjacentBorderCount",If[#, 0, 1]&@*MemberQ[1]];
+ a =gWrapper[seg, #, "AdjacentBorderCount",If[#, 0, 1]&@*MemberQ[Except[0]]];
  b = Function[1/(#+1)]@gWrapper[seg,Unevaluated@Dilation[#,dilationfact],"Neighbors",Composition[Length,Union,Flatten]]; 
  c = gWrapper[seg, #, "Label",If[#>=mincelllife, 1, 0]&@*Length];
  Dataset@ReverseSort[(a + b + c + 1.0)/4]
