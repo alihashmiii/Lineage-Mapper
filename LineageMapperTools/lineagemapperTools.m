@@ -39,6 +39,9 @@ cellExtract::usage = "cellExtract[segments_, index_] extracts specific cell(s) f
 
 confidenceIndex::usage = "confidenceIndex[seg_,mincelllife_:32,dilationfact_:2] generates a confidence index for the tracked cells"
 
+apoptoticCells::usage = "apoptoticCells[seg_,cellDeathDeltaCent_] yields all the possible apoptotic cells from the displacements of
+the cell centroids"
+
 (* ::Subsection:: *)
 (*Functions*)
 
@@ -142,6 +145,8 @@ confidenceIndex[seg_,mincelllife_:32,dilationfact_:2]:= Block[{a,b,c},
  Dataset@ReverseSort[(a + b + c + 1.0)/4]
 ]
 
+apoptoticCells[seg_,cellDeathDeltaCent_]:= Dataset@gWrapper[seg, #, "Centroid", Composition[#<=cellDeathDeltaCent&, Total,
+ BlockMap[EuclideanDistance[Sequence@@#]&,#,2,1]&]];
 
 End[];
 
