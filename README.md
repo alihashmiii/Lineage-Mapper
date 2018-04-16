@@ -10,7 +10,6 @@ https://pages.nist.gov/Lineage-Mapper/
 
 ##### `To do:`
 ###### * 1. make edge tracking faster
-###### * 2. output apoptosis from the tracking results.
 
 
 Here are a few capabilities of "Lineage Mapper" and some the functionality on top
