@@ -129,6 +129,18 @@ cellMesh[segments_, index_Integer, OptionsPattern[]] := Block[{plotopt},
    Map[ImageMesh[#, PlotRange -> plotopt] &, segments~singleCellExtract~index]
    ];
 
+confidenceWrapper[seg_,arg_,prop_,func_]:= GroupBy[
+ Flatten[ComponentMeasurements[arg,prop]&/@seg],Keys-> Values,func
+ ];
+
+SetAttributes[confidenceIndex, HoldAll];
+confidenceIndex[seg_,mincelllife_,dilationfact_]:= Block[{a,b,c},
+ a =confidenceWrapper[seg, #, "AdjacentBorderCount",If[#, 0, 1]&@*MemberQ[1]];
+ b = Function[1/(#+1)]@ confidenceWrapper[seg,Unevaluated@Dilation[#,dilationfact],"Neighbors",Composition[Length,Union,Flatten]]; 
+ c = confidenceWrapper[seg, #, "Label",If[#>=mincelllife, 1, 0]&@*Length];
+ Dataset@ReverseSort[(a + b + c + 1.0)/4]
+]
+
 
 End[];
 
