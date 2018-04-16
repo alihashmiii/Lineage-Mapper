@@ -145,9 +145,6 @@ confidenceIndex[seg_,mincelllife_:32,dilationfact_:2]:= Block[{a,b,c},
  Dataset@ReverseSort[(a + b + c + 1.0)/4]
 ]
 
-apoptoticCells[seg_,cellDeathDeltaCent_]:= Dataset@gWrapper[seg, #, "Centroid", Composition[#<=cellDeathDeltaCent&, Total,
- BlockMap[EuclideanDistance[Sequence@@#]&,#,2,1]&]];
-
 End[];
 
 
