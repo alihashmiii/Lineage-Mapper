@@ -65,8 +65,15 @@ Shown below are a few capabilities of "Lineage Mapper" and some of the additiona
 
 ##### **Note: the death toll is comprised of only those cells that are unassigned from the previous frame. This can change if one uses the centroid information of the tracked cells. Notably, cells that do not move much across multiple frames can be considered dead. Information about apoptosis can be obtained separately (using LineageMapperTools.m) **
 
+#### 8. `Fusions of cells into clusters`
 
-#### 8. `Cell as Regions for Computations`
+##### cells can merge together to form a cluster. Fusion Tree for such a case can be determined
+
+
+
+
+
+#### 9. `Cell as Regions for Computations`
 
 ##### cells as image can be converted to regions which can be further used for computations (solving PDEs etc..)
 
