@@ -21,7 +21,7 @@ Note: the algorithm is based on the approach proposed by Chalfoun et al. Scienti
 
 Options[cellTracker] = {"segmented" -> False, "overlapW" -> 1, "sizeW" -> 0.2, "centroidW" -> 0.5, "maxCentDist" -> 50.0,
 "mincellsize" -> 100, "criteria"-> {"on","on"}, "pdthreshoverlap" -> 0.2, "sizeSimilarity" -> 0.5, "aspectSimilarity" -> 0.7,
-"parentCircularity" -> 0.3, "frameCircularitycheck" -> 5, "fusionOverlapThresh" -> 0.2};
+"parentCircularity" -> 0.3, "frameCircularitycheck" -> 5, "fusionOverlapThresh" -> 0.2, "FusionEnabled" -> False};
 
 
 (* ::Subsection:: *)
@@ -331,48 +331,50 @@ breakingFusion[{currSeg_,daughters_},prevSeg_,parentkeys_,OptionsPattern@cellTra
 (* the function operates on the cost matrix etc.. to create a mapping between the source and target cells if any.
 Any unassigned cells @t are either dead or mitotic mother cells. Similarly any unassigned cells @t+1 either enter the FOV or are
 daughters. Fused cells once broken maintain their original labels. Here we use a graph with edgeweights to find unique mappings *)
-assignmentFunc[segCurr_,trackvector_,costMat_, splitcells_,mdpairs_,truePrevKeys_]:= Module[{segmentCurr= segCurr,
-currframelabels, currlabelsUntracked, daughters, mothers, realindices,artificialInds,newlabels,assignmentsList,
-ruleAssigned, currentassigned, currentunassigned, newcells, maxlabelprev,newcellAssignmentRules,allAssignmentRules,
-daughterlabels,previnds,selfRules,otherassoc,rules},
-
-currframelabels=Keys@ComponentMeasurements[segCurr,"Label"];
-
-{mothers,daughters}= mdpairs /.{{}-> {{},{}},x_/;True:> Thread@x};
+assignmentFunc[segCurr_,trackvector_,costMat_,fusionpairs_,mdpairs_,truePrevKeys_,opt:OptionsPattern[cellTracker]]:= With[{
+fusionflag = OptionValue["FusionEnabled"]},
+Module[{segmentCurr= segCurr, currframelabels, currlabelsUntracked, daughters, mothers,realindices,artificialInds,newlabels,
+assignmentsList,ruleAssigned, currentassigned, currentunassigned, newcells, maxlabelprev,newcellAssignmentRules,allAssignmentRules,
+daughterlabels,previnds,selfRules,otherassoc,rules,fusionsP,fusionsQ,fusedlabels},
+currframelabels = Keys@ComponentMeasurements[segCurr,"Label"];
+{fusionsQ,fusionsP} = {Keys@#,Values@#}&[fusionpairs];
+{mothers,daughters}= mdpairs /.{{}-> {{},{}},x_/;True :> Thread@x};
 daughters = Flatten@daughters;
-currlabelsUntracked = Complement[currframelabels,Join[daughters,Flatten@splitcells]];
-
-otherassoc= Sort@Flatten@KeyValueMap[Thread@*Rule,DeleteCases[colwiseMins[costMat]@Identity,x_/;Length@x>1]]; 
+currlabelsUntracked = Complement[currframelabels, Join[daughters,Flatten@fusionsP]];
 (* other possible associations using columnwise mins *)
+otherassoc= Sort@Flatten@KeyValueMap[Thread@*Rule,DeleteCases[colwiseMins[costMat]@Identity,x_/;Length@x>1]]; 
 rules=Sort@DeleteDuplicates[Join[trackvector,otherassoc]]; 
 artificialInds = rules/.Rule -> List;
 previnds = Part[truePrevKeys,artificialInds[[All,1]] ];
 realindices = Transpose[{previnds,Part[artificialInds,All,2]}];
-selfRules = splitcells/.{{}-> {},x_/;True:>(Thread[#-> #]&@Flatten@x)};
-
 (* create the graph with initialized weights for the assignment problem *)
 assignmentsList = Block[{p,c,edges,edgeweights,graph,assignments},
 edges=Subscript[p, #[[1]]]-> Subscript[c, #[[2]]]&/@realindices;
 edgeweights = costMat[[Sequence@@#]]&/@artificialInds;
 graph = Graph[edges,EdgeWeight->1./edgeweights];
-Print[Graph[graph, VertexLabels->"Name", EdgeLabels -> "EdgeWeight"]];
 assignments= FindIndependentEdgeSet@graph;
-Replace[assignments,HoldPattern[Subscript[p, x_]\[DirectedEdge]  Subscript[c, y_]] :> {x,y},{1}]
+Replace[assignments,HoldPattern[Subscript[p, x_]\[DirectedEdge]Subscript[c, y_]] :> {x,y},{1}]
 ];
-
 ruleAssigned = Reverse[Rule@@@assignmentsList,{2}];
 currentassigned = Part[assignmentsList,All,2];
 currentunassigned = Complement[currlabelsUntracked,currentassigned]; (* these are cells that arrived into FOV *)
-newcells = Sort@Join[currentunassigned,daughters];
+newcells = If[!fusionflag,Sort@#, Sort[#~Join~fusionsP]]&@Catenate[{currentunassigned,daughters}];
 maxlabelprev=Max@truePrevKeys;
 newlabels=Range[maxlabelprev+1,maxlabelprev+Length@newcells];
 newcellAssignmentRules=Thread[newcells-> newlabels];
+selfRules = If[!fusionflag, fusionsP/.{{}-> {},x_/;True:>(Thread[#-> #]&@Flatten@x)},{}];
 allAssignmentRules = Dispatch@SortBy[newcellAssignmentRules~Join~ruleAssigned~Join~selfRules,First];
 (* sow true labels of mother with the new labels of daughters *)
  mothers = Part[truePrevKeys,mothers];
 daughterlabels = Partition[Lookup[<|newcellAssignmentRules|>,daughters],2];
-Sow@<|Thread[mothers->daughterlabels]|>;
+If[Not@fusionflag, Sow@<|Thread[mothers -> daughterlabels]|>,
+( (*get new labels for the fusion case and sow if fusion is enabled *)
+fusedlabels = Lookup[<|newcellAssignmentRules|>,fusionsP];
+{Sow[<|Thread[mothers -> daughterlabels]|>,"x"], Sow[<|Thread[fusedlabels -> fusionsQ]|>,"y"]}
+) 
+];
 Replace[segCurr,allAssignmentRules,{2}] (* Use replace instead of arraycomponents with dispatch *)
+]
 ]
 
 
@@ -401,65 +403,68 @@ updateMat[costMat,mothersFindex,daughters,"cost"]; (* modifying cost matrix in p
 
 
 (* a helper function to the Mains to run the algorithm *)
-stackCorrespondence[segmentPrev_, Current_, OptionsPattern[cellTracker]]:= With[{frameCircCheck = OptionValue["frameCircularitycheck"],
-segmentedQ = OptionValue["segmented"]}, 
-Module[{overlaps,segmentCurr,costMat,daughters,
-curr = Current,trackvector,colwisemap,truePrevkeys,mothersFindex,fusionsFindex,fusionsTindex, mdpairs,splits,indicestokeep,
-keeplabelsRules,flattenDaughters, Dlabelchanges},
+stackCorrespondence[segmentPrev_, Current_, opt:OptionsPattern[cellTracker]]:= With[{frameCircCheck = 
+OptionValue["frameCircularitycheck"], segmentedQ = OptionValue["segmented"],fusionflag = OptionValue["FusionEnabled"]}, 
+Module[{overlaps,segmentCurr,costMat,daughters,curr = Current,trackvector,colwisemap,truePrevkeys,mothersFindex,
+fusionsFindex,fusionsTindex, mdpairs,splits,indicestokeep,keeplabelsRules,flattenDaughters, Dlabelchanges,cluster},
   segmentCurr = Switch[segmentedQ, False, segmentImage@Import@curr, _, curr]; (* segmentation ? \[Rule] do or do not as Yoda says *)
   overlaps = overlapMatrix[segmentPrev,segmentCurr]; (* compute overlaps *)
   costMat = costMatrix[segmentPrev,segmentCurr,overlaps]; (* associated costMatrix between the two segmented images *)
   truePrevkeys = Keys@ComponentMeasurements[segmentPrev,"Label"]; (* actual labels for parents @ t *)
   (* computing column mins and row mins *)
-  {trackvector,colwisemap} = Through[{rowwiseMins,colwiseMins}[costMat]];
-  
+  {trackvector,colwisemap} = Through[{rowwiseMins,colwiseMins}[costMat]]; 
  (* history about parent's roundness *)
  If[Length@$framehistory <= frameCircCheck,
     AppendTo[$framehistory,
       MapAt[4 \[Pi] (First[#]/(Last[#]^2))&, ComponentMeasurements[segmentPrev,{"Area","PerimeterLength"}], {All, 2}]],
     $framehistory = Delete[$framehistory,1]
   ];
- 
    (* appropriate checks for mitotic events *)
   {mothersFindex,daughters} = (checkDivision[costMat,overlaps,segmentCurr,segmentPrev,trackvector,colwisemap])/.{(_Return -> {{},{}}),
    (x_/; x =!={} :> Transpose[x]), _?(#=={}&) :> {{},{}}};
   mdpairs = Thread[{mothersFindex,daughters}];
   flattenDaughters = Flatten@daughters;
-  (* if mitotic events exist then replace the rows for the costmatrix and the columns (daughters) with \[Infinity] and
-  for overlap matrix with 0. This removes all possible paths from parents to cells @t+1 and for cells @t to reach daughters  *)
+  (* if mitotic events exist then replace the rows for the costmatrix and the columns (daughters) with \[Infinity] and for overlap
+  matrix with 0. This removes all possible paths from parents to cells @t+1 and for cells @t to reach daughters  *)
   updateMat[costMat,mothersFindex,daughters,"cost"]; (* modifying cost matrix in place *)
   updateMat[overlaps,mothersFindex,daughters,"overlap"]; (* modifying overlap matrix in place *) 
   (* updateMat[#1,mothersFindex,daughters,#2]&@@@{{costMat,"cost"},{overlaps,"overlaps"}}; *)
   trackvector = rowwiseMins@costMat; (* update tracking vector between frames *)
   (* identify fusions events *)
-  
   fusionsFindex = identifyFusions[segmentCurr,segmentPrev,overlaps,trackvector]; 
   fusionsTindex = Map[Part[truePrevkeys,#]&, fusionsFindex,{3}];
-  splits = Values@fusionsTindex;
-   
-  (* breaking incorrectly fused clusters. this will create new cells in the current frame. the cost matrix and overlap
-  matrix need to be recomputed *)
-  If[fusionsTindex != {},
+Which[Not@fusionflag,
+ (* breaking incorrectly fused clusters. this will create new cells in the current frame. the cost matrix and overlap matrix
+ need to be recomputed *)  
+  (If[fusionsTindex != {},
    {segmentCurr,flattenDaughters} = Fold[breakingFusion[#,segmentPrev,truePrevkeys][#2]&,{segmentCurr,flattenDaughters},fusionsTindex];
-   
    If[flattenDaughters != {}, 
-    daughters = Partition[flattenDaughters,2];
-    mdpairs = Thread[{mothersFindex,daughters}]
-   ];
+   daughters = Partition[flattenDaughters,2];
+   mdpairs = Thread[{mothersFindex,daughters}]
+   ]; 
   ];
-
   If[fusionsTindex != {} || mothersFindex != {},
+   splits = Values@fusionsTindex;
    indicestokeep = daughters~Join~splits;
    keeplabelsRules = Flatten@Map[#->#&,indicestokeep,{2}];
    segmentCurr = ArrayComponents[segmentCurr,2,Sort@keeplabelsRules];
    overlaps = overlapMatrix[segmentPrev,segmentCurr]; (* recomputing overlap and cost-matrix *)
-   costMat = costMatrix[segmentPrev,segmentCurr,overlaps]; 
+   costMat = costMatrix[segmentPrev,segmentCurr,overlaps];
    updateMat[overlaps,mothersFindex,daughters,"overlap"]; (* modifying overlap matrix in place *) 
    updateMat[costMat,mothersFindex,daughters,"cost"]; (* modifying cost matrix in place *)
    trackvector = rowwiseMins@costMat (* recomputing trackvector *)
-  ];
-  (* assignments to be made *)
-  assignmentFunc[segmentCurr,trackvector,costMat,splits,mdpairs,truePrevkeys] (*assignment between frames*)  
+  ]; (* assignments are made *)
+  assignmentFunc[segmentCurr,trackvector,costMat,fusionsTindex,mdpairs,truePrevkeys,opt]),
+  True, 
+  (*  when fusion is enabled modify cost/overlap matrix if possible and assign directly since we already know the cluster label(s)
+  if any and parent/daughter label(s) if any *)
+   cluster = Keys@fusionsTindex;
+   updateMat[overlaps,mothersFindex,daughters~Join~cluster,"overlap"]; (* modifying overlap matrix in place *) 
+   updateMat[costMat,mothersFindex,daughters~Join~cluster,"cost"]; (* modifying cost matrix in place *)
+   trackvector = rowwiseMins@costMat; (* recomputing trackvector *)
+   (* make assignments *)
+   assignmentFunc[segmentCurr,trackvector,costMat,Reverse[fusionsTindex,2],mdpairs,truePrevkeys,opt]
+  ]  
 ]
 ];
 
