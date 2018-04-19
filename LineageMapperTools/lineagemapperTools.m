@@ -93,6 +93,12 @@ lineageTree[linkages_] := Block[{func, arrowend},
   ];
 
 
+fusionTree[linkages_]:= Block[{normlinks = Normal@Last@linkages,color},
+ color = (#-> RandomColor[]&)/@Cases[normlinks,_Integer,{3,4}];
+ Graph[Flatten@Map[Thread]@Flatten[Reverse[#,2]&/@normlinks, 1], VertexLabels->"Name",VertexStyle->color,VertexSize-> 0.5]
+];
+
+
 singleCellExtract[segments_, index_Integer] := With[{ind = index},
    Block[{maskRep, elem},
     Map[Image]@First[(Reap@Scan[
@@ -114,7 +120,7 @@ Sow@Switch[Count[elem,_SparseArray],
 0,ConstantImage[0,dim],
 Except[0],Image[Total@Cases[elem,x_SparseArray:> x]]]
 )&,segments]
-	]
+  ]
 ];
 
 
