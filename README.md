@@ -69,8 +69,11 @@ Shown below are a few capabilities of "Lineage Mapper" and some of the additiona
 
 ##### cells can merge together to form a cluster. Fusion Tree for such a case can be determined
 
+![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/fusions1.png)
 
+![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/fusions2.png)
 
+![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/fusions3.png)
 
 
 #### 9. `Cell as Regions for Computations`
