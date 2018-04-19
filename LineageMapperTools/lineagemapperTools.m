@@ -93,7 +93,7 @@ lineageTree[linkages_] := Block[{func, arrowend},
   ];
 
 
-fusionTree[linkages_]:= Block[{normlinks = Normal@Last@linkages,color},
+fusionTree[linkages_]:= Block[{normlinks = Normal@linkages,color},
  color = (#-> RandomColor[]&)/@Cases[normlinks,_Integer,{3,4}];
  Graph[Flatten@Map[Thread]@Flatten[Reverse[#,2]&/@normlinks, 1], VertexLabels->"Name",VertexStyle->color,VertexSize-> 0.5]
 ];
