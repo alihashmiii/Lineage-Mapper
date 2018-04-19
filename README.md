@@ -67,13 +67,17 @@ Shown below are a few capabilities of "Lineage Mapper" and some of the additiona
 
 #### 8. `Fusions of cells into clusters`
 
-##### cells can merge together to form a cluster. Fusion Tree for such a case can be determined
+##### cells can be tracked while they merge or fuse together to form colonies.
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/fusions1.png)
 
-![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/fusions2.png)
+##### A fusion graph can be generated (the graph/tree delineates cells that fuse together to form new colonies/entities).
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/fusions3.png)
+
+##### Lineage tree/table for mitotic events and the birth-death table.
+
+![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/fusions2.png)
 
 
 #### 9. `Cell as Regions for Computations`
