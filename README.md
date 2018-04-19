@@ -73,7 +73,7 @@ Shown below are a few capabilities of "Lineage Mapper" and some of the additiona
 
 ##### A fusion graph can be generated (the graph/tree delineates cells that fuse together to form new colonies/entities).
 
-![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/fusions3.png)
+![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/fusionstree.png)
 
 ##### Lineage tree/table for mitotic events and the birth-death table.
 
