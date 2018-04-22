@@ -306,10 +306,11 @@ breakingFusion[{currSeg_,daughters_},prevSeg_,parentkeys_,OptionsPattern@cellTra
   toreplace = Cases[keys,_Symbol];
   rules = Thread[toreplace -> Take[newLabels,Length@toreplace]];
   If[symDs != {}, 
-  newDaughterLab = Cases[rules,PatternSequence[Alternatives@@symDs -> ind_]:> ind];
+  (* newDaughterLab = Cases[rules,PatternSequence[Alternatives@@symDs -> ind_]:> ind]; *)
+  newDaughterLab = Values@FilterRules[rules,symDs];
   DaughterLabChange = Thread[oldDaughterLab -> newDaughterLab];
   ]; 
-  tempSeg = Replace[tempSeg,rules,{2}]  
+  tempSeg = Replace[tempSeg,Dispatch@rules,{2}]  
   ];
  
   masks = Cases[Last@@@ComponentMeasurements[tempSeg,{"Label","Mask"},
