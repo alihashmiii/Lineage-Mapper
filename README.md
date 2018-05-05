@@ -1,6 +1,7 @@
 # Lineage-Mapper
 
 ![status](https://img.shields.io/badge/status-passed-blue.svg)
+![built-and-tested](https://img.shields.io/badge/built%20%26%20tested-mathematica%2011.3-brightgreen.svg)
 
 @Author: Ali Hashmi
 
