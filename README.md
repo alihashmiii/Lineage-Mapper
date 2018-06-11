@@ -79,7 +79,7 @@ Shown below are a few capabilities of "Lineage Mapper" and some of the additiona
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/fusionstree.png)
 
-##### Lineage tree/table for mitotic events and the birth-death table.
+##### Lineage tree/table for mitotic events and the birth-death table can be determined even if fusion is enabled.
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/fusions2.png)
 
