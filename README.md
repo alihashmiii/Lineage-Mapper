@@ -11,6 +11,7 @@
 ###### * 2. incorporate vertex tracking
 
 
+### Summary and Usage
 
 The Wolfram Language implementation of the overlap-based cell tracker is based on an article by `Chalfoun et al, Scientific Reports, 2016` (https://www.nature.com/articles/srep36984). The algorithm can robustly track cells, corrects for any incorrect mergers/fusions of cells in an automated fashion and detects possible mitotic events using stringent criterions for mother/daughter cells. The algorithm used for tracking is not specific to any segmentation scheme, which indeed is a great thing and it makes lineage mapper more robust than many tracking schemes out there ! (Read the article for more detail). In short, the tracking scheme uses a minimization scheme over a cost matrix (Hungarian Algorithm). In this implementation, I have used a graph theoretic approach to generate the same results. 
 
