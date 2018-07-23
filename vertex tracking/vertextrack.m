@@ -66,7 +66,7 @@ elems=SparseArray[{First@dim-Last@#,First@#}-> 1,dim];
  spArray=SparseArray[ImageData@Dilation[Image@elems,maskDilation]]*segDil;
 Round@Union@spArray["NonzeroValues"]
 ]&/@pts;
-vertices=Cases[Thread[Round@members-> pts],HoldPattern[x:{__}/;Length@x >= 3 -> _]];
+vertices=Cases[Thread[Round@members-> pts],HoldPattern[pattern:{__}/;Length@pattern >= 3 -> _]];
 nearest=Nearest@Reverse[vertices, 2];
 KeyMap[Union@*Flatten]@GroupBy[
 MapAt[Sort,(#-> nearest[#,{2, 2}]&/@Values[vertices]),{All,2}],
