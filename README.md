@@ -59,13 +59,22 @@ Shown below are a few capabilities of "Lineage Mapper" and some of the additiona
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/benoitedgetrack.gif)
 
 
-#### 6. `Incorrect Fusions are dealt with`
+#### 6. `Tracking an Edge`
+
+##### once the cells are tracked we can assign vertices to the respective cells. Vertices are defined as points that are shared
+between three or more cells. We can either track all the vertices or the ones specified by the user - corresponding to a given
+cell(s)
+
+![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/vertextrackAll.gif) | ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/vertextrackDefined.gif)
+
+
+#### 7. `Incorrect Fusions are dealt with`
 
 ##### Sometimes during segmentation neighbouring cells can fuse together to form a single cell. This behaviour is in most cases not desired. Lineage Mapper can break such clusters of cells.
 
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/trackedandmaskcorrected.png)
 
-#### 7. `Generate Lineage Table/Tree and BirthDeath Table`
+#### 8. `Generate Lineage Table/Tree and BirthDeath Table`
 
 ##### **we can get the parent-daughter associations in form of either a table or a graph**
 
@@ -74,7 +83,7 @@ Shown below are a few capabilities of "Lineage Mapper" and some of the additiona
 
 ##### **Note: the death toll is comprised of only those cells that are unassigned from the previous frame. This can change if one uses the centroid information of the tracked cells. Notably, cells that do not move much across multiple frames can be considered dead. Information about apoptosis can be obtained separately (using LineageMapperTools.m) **
 
-#### 8. `Fusions of cells into clusters`
+#### 9. `Fusions of cells into clusters`
 
 ##### cells can be tracked while they merge or fuse together to form colonies.
 
@@ -89,7 +98,7 @@ Shown below are a few capabilities of "Lineage Mapper" and some of the additiona
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/fusions2.png)
 
 
-#### 9. `Cell as Regions for Computations`
+#### 10. `Cell as Regions for Computations`
 
 ##### cells as image can be converted to regions which can be further used for computations (solving PDEs etc..)
 
