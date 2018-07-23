@@ -57,10 +57,10 @@ Last\[Rule]First,Round@*N@*Mean]//Normal
 
 
 Clear@associateVertices;
-associateVertices[img_,seg_,DilationThresh_:1,maskDilation_:2]:= With[{dim =Reverse@ImageDimensions@img },
-Module[{pts,segDil,morph,mask,members,vertices,nearest},
+associateVertices[img_,segt_,DilationThresh_:1,maskDilation_:2]:= With[{dim =Reverse@ImageDimensions@img },
+Module[{pts,segDil,members,vertices,nearest},
 pts = PixelValuePositions[MorphologicalTransform[img,{"Fill","SkeletonBranchPoints"}], 1];
-segDil=seg~Dilation~DilationThresh;
+segDil=segt~Dilation~DilationThresh;
 members=Block[{spArray,elems},
 elems=SparseArray[{First@dim-Last@#,First@#}-> 1,dim];
  spArray=SparseArray[ImageData@Dilation[Image@elems,maskDilation]]*segDil;
@@ -70,7 +70,7 @@ vertices=Cases[Thread[Round@members-> pts],HoldPattern[x:{__}/;Length@x >= 3 -> 
 nearest=Nearest@Reverse[vertices, 2];
 KeyMap[Union@*Flatten]@GroupBy[
 MapAt[Sort,(#-> nearest[#,{2, 2}]&/@Values[vertices]),{All,2}],
-Last->First,N@*Mean]//Normal 
+Last->First,N@*Mean]//Normal
 ]
 ];
 
@@ -86,9 +86,9 @@ subextractions[extractions_,ind_]:= FilterRules[extractions,{OrderlessPatternSeq
 
 Clear@extractCellVertices;
 extractCellVertices[track_,ind_]:= First@*Last@Reap[
-Catch@Scan[Block[{x},
-x = Cases[#,PatternSequence[OrderlessPatternSequence[{___,Alternatives@@ind,___}]-> _]];
-If[Length@x>0,Sow@x,Throw@"termination"]
+Catch@Scan[Block[{tv},
+tv = Cases[#,PatternSequence[OrderlessPatternSequence[{___,Alternatives@@ind,___}]-> _]];
+If[Length@tv>0,Sow@tv,Throw@"termination"]
 ]&,track]
 ];
 
@@ -106,7 +106,7 @@ MapThread[HighlightImage,{Take[imageStack,Length@elems],elems}]
 
 (* `Private` *)
 Begin["`Private`"]
-End[] 
+End[]
 
 
 EndPackage[]
