@@ -59,7 +59,7 @@ Shown below are a few capabilities of "Lineage Mapper" and some of the additiona
 ![alt text](https://github.com/alihashmiii/Lineage-Mapper/blob/master/uploadReadMe/benoitedgetrack.gif)
 
 
-#### 6. `Tracking an Edge`
+#### 6. `Tracking vertices`
 
 ##### once the cells are tracked we can assign vertices to the respective cells. Vertices are defined as points that are shared
 between three or more cells. We can either track all the vertices or the ones specified by the user - corresponding to a given
