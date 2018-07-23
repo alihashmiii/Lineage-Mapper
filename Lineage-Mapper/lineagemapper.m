@@ -377,7 +377,7 @@ assignmentFunc[segCurr_,trackvector_,costMat_,fusionpairs_,mdpairs_,truePrevKeys
   {Sow[<|Thread[mothers -> daughterlabels]|>,"x"], Sow[<|Thread[fusedlabels -> fusionsQ]|>,"y"]}
   ) 
  ];
-  Replace[segCurr,allAssignmentRules,{2}] (* Use replace instead of arraycomponents with dispatch *)
+  Replace[segCurr,allAssignmentRules,{2}] 
  ]
 ]
 
