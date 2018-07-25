@@ -18,13 +18,14 @@
 BeginPackage["vertextrack`"]
 
 
-trackVertices::usage = "trackVertices[images_,segments_] takes the sequence of binarized images and tracked labeled matrices and outputs a list of vertices
-corresponding to the different cells";
+trackVertices::usage = "trackVertices[images_,segments_] takes the sequence of binarized images and tracked labeled matrices and
+outputs a list of vertices corresponding to the different cells";
 
-extractCellVertices::usage = "extractCellVertices[track_,ind_] takes a list of tracked vertices and a cell index or a list of cell indices to filter for cell vertices";
+extractCellVertices::usage = "extractCellVertices[track_,ind_] takes a list of tracked vertices and a cell index or a list of cell
+indices to filter for cell vertices";
 
-visualizeCellVertices::usage = "visualizeCellVertices[imageStack_, trackVector_, ind_: All] utilizes the imagestack and the output of trackVertices[ ] to generate a visual
-for tracked vertices. All vertices \"All\" or particular vertices can be defined as {1,2 ...}";
+visualizeCellVertices::usage = "visualizeCellVertices[imageStack_, trackVector_, ind_: All] utilizes the imagestack and the output
+of trackVertices[] to generate a visual for tracked vertices. All vertices \"All\" or particular vertices can be defined as {1,2 ...}";
 
 
 (*

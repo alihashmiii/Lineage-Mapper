@@ -76,7 +76,8 @@ Thread[Map[First]@position -> Keys@Extract[sharededges,position]]
 
 SetAttributes[trackedEdgeMask,{HoldFirst}];
 Options[trackedEdgeMask]={"property"-> "Shape"};
-trackedEdgeMask[segstacks_, cell1_, cell2_, OptionsPattern[]]:= With[{edgeAssignMat = Composition[First,Last]@edgeAssociation[Unevaluated@segstacks]},
+trackedEdgeMask[segstacks_, cell1_, cell2_, OptionsPattern[]]:= With[{edgeAssignMat = 
+Composition[First,Last]@edgeAssociation[Unevaluated@segstacks]},
     Module[{edgeToCellLinkage = First@edgeAssociation[segstacks]},
     First@Last@Reap[
       Module[{tracked = trackEdgebetweenCells[edgeToCellLinkage,cell1,cell2],frame,elem,
@@ -98,7 +99,8 @@ trackedEdgeMask[segstacks_, cell1_, cell2_, OptionsPattern[]]:= With[{edgeAssign
 (*
 (*highlight edge on the colorized cell component matrix*)
 SetAttributes[plotEdge,{HoldFirst}];
-plotEdge[segstacks_, cell1_, cell2_] := First@Last@Reap@With[{edgeAssignMat = Composition[First,Last]@edgeAssociation[Unevaluated@segstacks],
+plotEdge[segstacks_, cell1_, cell2_] := First@Last@Reap@With[{edgeAssignMat =
+Composition[First,Last]@edgeAssociation[Unevaluated@segstacks],
 edgeCellLink = First@edgeAssociation[segstacks]},
 Module[{tracked,frame, elem, edgematrix, labelcellMat},
    tracked = trackEdgebetweenCells[edgeCellLink,cell1,cell2];
