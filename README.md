@@ -5,11 +5,11 @@
 
 @Author: Ali Hashmi
 
-##### `New Addition:`
-###### * vertex tracking for epithelial cells
+##### `New Additions:`
 
-##### `To do:`
-###### * 1. optimize edge tracking for speed
+###### * vertex tracking for epithelial cells
+###### * parallelized version for edge tracking
+
 
 
 ### Summary and Usage
