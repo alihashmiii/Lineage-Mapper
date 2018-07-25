@@ -9,7 +9,7 @@
 (* :Date: 2018-01-15 *)
 
 (* :Package Version: 0.1 *)
-(* :Mathematica Version: *)
+(* :Mathematica Version: 11.3 *)
 (* :Copyright: (c) 2018 Ali Hashmi *)
 (* :Keywords: *)
 (* :Discussion: *)
@@ -28,7 +28,7 @@ Begin["`Private`"] (* `Private` *)
 
 
 segmentEdgesHelper[img_]:= Module[{imagetemp},
-  imagetemp = ImageFilter[If[#[[3,3]]==1 && Total[#[[2;;-2,2;;-2]],2]==3,1,0]&,img,2]; (* create edge component matrix *)
+  imagetemp = ImageFilter[If[#[[3,3]] == 1 && Total[#[[2;;-2,2;;-2]],2]==3,1,0]&,img,2]; (* create edge component matrix *)
   MorphologicalComponents[imagetemp]
 ];
 
@@ -58,7 +58,7 @@ relabeledgetocell,edgetocellfinal},
 
 
 SetAttributes[edgeAssociation, {HoldFirst}];
-edgeAssociation[segments_] := edgeAssociation[segments] = Reap[edgeAssoc/@segments];
+edgeAssociation[segments_] := edgeAssociation[segments] =  Reap[ParallelTable[edgeAssoc[l],{l,segments}] ];
 
 
 (* ::Subsubsection:: *)
@@ -66,10 +66,11 @@ edgeAssociation[segments_] := edgeAssociation[segments] = Reap[edgeAssoc/@segmen
 
 
 trackEdgebetweenCells[edgeCellLink_,cell1_,cell2_]:=Module[{sharededges,position},
-  sharededges = Replace[Flatten[Rest/@edgeCellLink, 1],
+sharededges = Replace[Flatten[Rest/@edgeCellLink, 1],
     HoldPattern[_ -> {_Integer}] :> Sequence[], {2}];
-  position = Position[sharededges, PatternSequence[HoldPattern[_ -> {cell1,cell2}] | HoldPattern[_ -> {cell2,cell1}]]];
-  Thread[Map[First]@position-> Keys@Extract[sharededges,position]]
+(* position = Position[sharededges, PatternSequence[HoldPattern[_ -> {cell1,cell2}] | HoldPattern[_ -> {cell2,cell1}]]]; *)
+position = Position[sharededges, _ -> OrderlessPatternSequence[{cell1, cell2}]];
+Thread[Map[First]@position -> Keys@Extract[sharededges,position]]
 ];
 
 
@@ -95,7 +96,7 @@ trackedEdgeMask[segstacks_, cell1_, cell2_, OptionsPattern[]]:= With[{edgeAssign
 
 
 (*
-(* highlight edge on the colorized cell component matrix *)
+(*highlight edge on the colorized cell component matrix*)
 SetAttributes[plotEdge,{HoldFirst}];
 plotEdge[segstacks_, cell1_, cell2_] := First@Last@Reap@With[{edgeAssignMat = Composition[First,Last]@edgeAssociation[Unevaluated@segstacks],
 edgeCellLink = First@edgeAssociation[segstacks]},
