@@ -78,7 +78,7 @@ Last->First,N@*Mean]//Normal
 
 Clear@trackVertices;
 trackVertices[images_,segments_]:= ParallelTable[
-associateVertices[images[[i]], segments[[i]]],{i,1,Length@images}];
+ associateVertices[images[[i]], segments[[i]]],{i,1,Length@images}];
 
 
 Clear@subextractions;
