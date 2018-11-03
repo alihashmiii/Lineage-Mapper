@@ -14,6 +14,7 @@ neighboursQuery::usage = "given a labeled matrix the function can be used to det
 lineageTable::usage = "construct a table of parents and daughters along with the frame number prior division. For the function
 provide the second argument/result from LineageMapper";
 
+fusionTree::usage = "generates fusion tree when fusion of cells or colonies is enabled";
 
 centroidMap::usage = "centroidMap[segments] takes in the segmented stacks to plot the displacement of either the entire cell
 population or a selection of cells specified by the user that survive some x duration (integer). The option for example is
