@@ -14,7 +14,7 @@ neighboursQuery::usage = "given a labeled matrix the function can be used to det
 lineageTable::usage = "construct a table of parents and daughters along with the frame number prior division. For the function
 provide the second argument/result from LineageMapper";
 
-fusionTree::usage = "generates fusion tree when fusion of cells or colonies is enabled";
+fusionTree::usage = "fusionTree[linkages_] generates a fusion tree when fusion of cells or colonies is enabled";
 
 centroidMap::usage = "centroidMap[segments] takes in the segmented stacks to plot the displacement of either the entire cell
 population or a selection of cells specified by the user that survive some x duration (integer). The option for example is
@@ -82,14 +82,13 @@ birthDeathFrameRecord[segments_] := Dataset@GroupBy[
     Last -> First, MinMax];
 
 
-lineageTree[linkages_] := Block[{func, arrowend},
-  arrowend = Graphics[Line[{{{-1, 1/2}, {0, 0}, {-1, -1/2}}}]];
+lineageTree[linkages_] := Block[{func},
   func[Null] = Sequence[];
   func[<|patt : HoldPattern[_ -> {_, _}] ... |>]:= Apply[Thread[Rule[#, #2]] &, {patt}, {1}];
   TreePlot[Flatten[func /@ linkages], Left,
-   EdgeRenderingFunction -> ({Arrowheads[{{Automatic, Automatic, arrowend}}], Arrow[#1, 0.1]} &), 
-   VertexRenderingFunction -> ({Lighter@RandomColor[], EdgeForm[None], Disk[#, .1], 
-   Style[Text[#2, #1], {Bold, Black, FontSize -> 12}]} &)
+   EdgeRenderingFunction -> ({Black, Arrowheads[{{Automatic, Automatic}}], Arrow[#1, 0.2]} &), 
+   VertexRenderingFunction -> ({Lighter@Lighter@RandomColor[], EdgeForm[Black], Disk[#, .2], 
+   Style[Text[#2, #1], {Bold, Black, FontSize -> 10}]} &)
    ]
   ];
 
