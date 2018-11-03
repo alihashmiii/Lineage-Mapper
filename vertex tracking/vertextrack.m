@@ -57,14 +57,15 @@ Last\[Rule]First,Round@*N@*Mean]//Normal
 *)
 
 
-Clear@associateVertices;
-associateVertices[img_,segt_,DilationThresh_:1,maskDilation_:2]:= With[{dim =Reverse@ImageDimensions@img },
-Module[{pts,segDil,members,vertices,nearest},
+Options[associateVertices]={"watershed"-> True,"dilSeg"-> 1};
+associateVertices[img_,segt_,maskDil_:2,OptionsPattern[]]:= With[{dim =Reverse@ImageDimensions@img,watershed=OptionValue["watershed"],
+dilSeg=OptionValue["dilSeg"]},
+Module[{pts,members,vertices,nearest,segDil=segt},
 pts = PixelValuePositions[MorphologicalTransform[img,{"Fill","SkeletonBranchPoints"}], 1];
-segDil=segt~Dilation~DilationThresh;
+If[!OptionValue["watershed"],segDil=Dilation[segDil,dilSeg]];
 members=Block[{spArray,elems},
-elems=SparseArray[{First@dim-Last@#,First@#}-> 1,dim];
- spArray=SparseArray[ImageData@Dilation[Image@elems,maskDilation]]*segDil;
+elems=SparseArray[{First@dim-Last@#,First@#}->1,dim];
+spArray=SparseArray[ImageData@Dilation[Image@elems,maskDil]]*segt;
 Round@Union@spArray["NonzeroValues"]
 ]&/@pts;
 vertices=Cases[Thread[Round@members-> pts],HoldPattern[pattern:{__}/;Length@pattern >= 3 -> _]];
@@ -73,19 +74,16 @@ KeyMap[Union@*Flatten]@GroupBy[
 MapAt[Sort,(#-> nearest[#,{2, 2}]&/@Values[vertices]),{All,2}],
 Last->First,N@*Mean]//Normal
 ]
-];
+]; 
 
 
-Clear@trackVertices;
-trackVertices[images_,segments_]:= ParallelTable[
- associateVertices[images[[i]], segments[[i]]],{i,1,Length@images}];
+trackVertices[image_Image,segment_]:= associateVertices[image, segment];
+trackVertices[images_,segments_]:= ParallelTable[associateVertices[images[[i]], segments[[i]]],{i,1,Length@images}];
 
 
-Clear@subextractions;
 subextractions[extractions_,ind_]:= FilterRules[extractions,{OrderlessPatternSequence[___,ind,___]}-> _];
 
 
-Clear@extractCellVertices;
 extractCellVertices[track_,ind_]:= First@*Last@Reap[
 Catch@Scan[Block[{tv},
 tv = Cases[#,PatternSequence[OrderlessPatternSequence[{___,Alternatives@@ind,___}]-> _]];
@@ -94,14 +92,14 @@ If[Length@tv>0,Sow@tv,Throw@"termination"]
 ];
 
 
-Clear@visualizeCellVertices;
+visualizeCellVertices[image_Image,trackVector_]:=HighlightImage[image,{Green,Values@trackVector}];
 visualizeCellVertices[imageStack_,trackVector_,ind_: All]:=Block[{elems},
 Switch[ind, All,
-MapThread[HighlightImage,{Take[imageStack,Length@trackVector],Values@trackVector}]
-, _ ,
-(elems= Values@extractCellVertices[trackVector,ind];
-MapThread[HighlightImage,{Take[imageStack,Length@elems],elems}]
-)]//ListAnimate
+ MapThread[HighlightImage[#1,{Green,#2}]&,{Take[imageStack,Length@trackVector],Values@trackVector}]
+ , _ ,
+ (elems= Values@extractCellVertices[trackVector,ind];
+ MapThread[HighlightImage[#1,{Green,#2}]&,{Take[imageStack,Length@elems],elems}]
+ )]//ListAnimate
 ];
 
 
