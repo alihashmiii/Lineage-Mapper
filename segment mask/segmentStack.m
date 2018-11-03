@@ -24,7 +24,7 @@ BeginPackage["segmentStack`"]
 
 
 segmentImage[binarizedMask_?ImageQ,opt:"ConnectedComponents"|"Watershed":"Watershed",threshCellsize_:20000]:= Module[{seg,areas,
-indexMaxarea,maxArea,indsmallareas={},ind},
+indexMaxarea,maxArea,indsmallareas={},$ind},
  seg = Switch[opt,"ConnectedComponents",
  MorphologicalComponents@*ColorNegate@Dilation[binarizedMask,1],
  "Watershed",
@@ -34,8 +34,8 @@ indexMaxarea,maxArea,indsmallareas={},ind},
  {indexMaxarea,maxArea} = First@MaximalBy[areas,Last]/.Rule-> List;
  indsmallareas = Keys@Cases[areas,HoldPattern[_-> 1.]];
  If[maxArea >= threshCellsize || indsmallareas != {},
- ind = {indexMaxarea}~Join~indsmallareas;
- seg = ArrayComponents[seg,Length@areas,Thread[ind->0]]
+ $ind = {indexMaxarea}~Join~indsmallareas;
+ seg = ArrayComponents[seg,Length@areas,Thread[$ind->0]]
  ];
  If[opt == "ConnectedComponents", seg~Dilation~1, seg]
 ];
