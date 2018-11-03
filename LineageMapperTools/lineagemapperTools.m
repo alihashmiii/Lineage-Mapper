@@ -21,7 +21,7 @@ provided as \"cutoffLength\" -> 3 ";
 
 
 birthDeathFrameRecord::usage = "birthDeathFrameRecord[segments_] takes the segmented stacks and for each cell index outputs
-the birth and death frame"
+the birth and death frame";
 
 
 lineageTree::usage = "given the linkages (2nd arg) of the result from LineageMapper` plot a Lineage Tree of the cell population";
@@ -37,10 +37,10 @@ coordinates or cropped. To have the mesh embedded in the coordinate system use \
 
 cellExtract::usage = "cellExtract[segments_, index_] extracts specific cell(s) from the segmented image-stack";
 
-confidenceIndex::usage = "confidenceIndex[seg_,mincelllife_:32,dilationfact_:2] generates a confidence index for the tracked cells"
+confidenceIndex::usage = "confidenceIndex[seg_,mincelllife_:32,dilationfact_:2] generates a confidence index for the tracked cells";
 
 apoptoticCells::usage = "apoptoticCells[seg_, minlifeThresh_:32, celldeathdelta_:10] yields possible apoptotic cells from cell-size and
-centroid information"
+centroid information";
 
 (* ::Subsection:: *)
 (*Functions*)
@@ -48,9 +48,9 @@ centroid information"
 
 Begin["`Private`"];
 
-
 Options[neighboursQuery]={"option" -> "Neighbors"};
-neighboursQuery[labeledMat_, OptionsPattern[]]:= Dataset@<|ComponentMeasurements[labeledMat~Dilation~1, OptionValue@"option"]|>;
+neighboursQuery[labeledMat_, dilFactor_:1, OptionsPattern[]]:= Dataset@<|ComponentMeasurements[labeledMat~Dilation~dilFactor,
+ OptionValue@"option"]|>;
 
 
 lineageTable[linkage_] := Dataset@DeleteMissing[
