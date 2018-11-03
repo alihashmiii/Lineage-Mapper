@@ -7,8 +7,9 @@
 
 ##### `New Additions:`
 
+###### * binary masks can be segmented into labels with either Watershed or Connected Components
 ###### * vertex tracking for epithelial cells
-###### * parallelized version for edge tracking
+###### * edge tracking in epithelial cells
 
 
 
