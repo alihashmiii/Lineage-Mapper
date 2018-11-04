@@ -65,7 +65,7 @@ pts = PixelValuePositions[MorphologicalTransform[img,{"Fill","SkeletonBranchPoin
 If[!OptionValue["watershed"],segDil=Dilation[segDil,dilSeg]];
 members=Block[{spArray,elems},
 elems=SparseArray[{First@dim-Last@#,First@#}->1,dim];
-spArray=SparseArray[ImageData@Dilation[Image@elems,maskDil]]*segt;
+spArray=SparseArray[ImageData@Dilation[Image@elems,maskDil]]*segDil;
 Round@Union@spArray["NonzeroValues"]
 ]&/@pts;
 vertices=Cases[Thread[Round@members-> pts],HoldPattern[pattern:{__}/;Length@pattern >= 3 -> _]];
