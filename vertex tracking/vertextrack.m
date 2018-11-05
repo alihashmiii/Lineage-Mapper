@@ -27,8 +27,7 @@ indices to filter for cell vertices";
 visualizeCellVertices::usage = "visualizeCellVertices[imageStack_, trackVector_, ind_: All] utilizes the imagestack and the output
 of trackVertices[] to generate a visual for tracked vertices. All vertices \"All\" or particular vertices can be defined as {1,2 ...}";
 
-(*
-Options[associateVertices]={"watershed"-> True,"dilSeg"-> 1};
+(*Options[associateVertices]={"watershed"-> True,"dilSeg"-> 1};
 associateVertices[img_,segt_,maskDil_:2,OptionsPattern[]]:= With[{dim =Reverse@ImageDimensions@img,watershed=OptionValue["watershed"],
 dilSeg=OptionValue["dilSeg"]},
 Module[{pts,members,vertices,nearest,segDil=segt},
@@ -45,8 +44,7 @@ KeyMap[Union@*Flatten]@GroupBy[
 MapAt[Sort,(#-> nearest[#,{2, 2}]&/@Values[vertices]),{All,2}],
 Last->First,N@*Mean]//Normal
 ]
-];
-*)
+];*)
 
 
 Options[associateVertices]={"watershed"-> True,"dilSeg"-> 1,"stringentCheck"-> True};
