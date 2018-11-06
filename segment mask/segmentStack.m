@@ -25,11 +25,10 @@ BeginPackage["segmentStack`"]
 segmentImage[binarizedMask_?ImageQ,opt:"ConnectedComponents"|"Watershed":"Watershed",threshCellsize_:20000]:= Module[{seg,areas,
 indexMaxarea,maxArea,indsmallareas={},$ind},
 seg= Switch[opt,"ConnectedComponents",
-(* assuming we input 0 as foreground and 1 as background. ConnectedComponents is a more general segmentation
-framework *)
+(* assuming we input 0 as foreground and 1 as background. ConnectedComponents is a more general segmentation framework *)
 MorphologicalComponents[ColorNegate@binarizedMask, CornerNeighbors->False],
 "Watershed",
-(* for epithelial cells *)
+(* for epithelial cells only *)
 WatershedComponents[binarizedMask, CornerNeighbors->False]
 ];
 areas=ComponentMeasurements[seg,"Area"];
