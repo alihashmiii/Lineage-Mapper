@@ -27,38 +27,17 @@ indices to filter for cell vertices";
 visualizeCellVertices::usage = "visualizeCellVertices[imageStack_, trackVector_, ind_: All] utilizes the imagestack and the output
 of trackVertices[] to generate a visual for tracked vertices. All vertices \"All\" or particular vertices can be defined as {1,2 ...}";
 
-(*Options[associateVertices]={"watershed"-> True,"dilSeg"-> 1};
-associateVertices[img_,segt_,maskDil_:2,OptionsPattern[]]:= With[{dim =Reverse@ImageDimensions@img,watershed=OptionValue["watershed"],
-dilSeg=OptionValue["dilSeg"]},
-Module[{pts,members,vertices,nearest,segDil=segt},
-pts = PixelValuePositions[MorphologicalTransform[img,{"Fill","SkeletonBranchPoints"}], 1];
-If[!OptionValue["watershed"],segDil=Dilation[segDil,dilSeg]];
-members=Block[{spArray,elems},
-elems=SparseArray[{First@dim-Last@#,First@#}->1,dim];
-spArray=SparseArray[ImageData@Dilation[Image@elems,maskDil]]*segDil;
-Round@Union@spArray["NonzeroValues"]
-]&/@pts;
-vertices=Cases[Thread[Round@members-> pts],HoldPattern[pattern:{__}/;Length@pattern >= 3 -> _]];
-nearest=Nearest@Reverse[vertices, 2];
-KeyMap[Union@*Flatten]@GroupBy[
-MapAt[Sort,(#-> nearest[#,{2, 2}]&/@Values[vertices]),{All,2}],
-Last->First,N@*Mean]//Normal
-]
-];*)
 
-
-Options[associateVertices]={"watershed"-> True,"dilSeg"-> 1,"stringentCheck"-> True};
-associateVertices[img_,segt_,maskDil_:2,OptionsPattern[]]:= With[{dim =Reverse@ImageDimensions@img,watershed=OptionValue["watershed"],
-dilSeg=OptionValue["dilSeg"],stringentQ=OptionValue["stringentCheck"]},
-Module[{pts,members,vertices,nearest,segC=segt,vertexset,likelymergers,imagegraph,imggraphweight,imggraphpts,vertexpairs,
+Options[associateVertices]= {"stringentCheck"-> True};
+associateVertices[img_,segt_,maskDil_:2,OptionsPattern[]]:= With[{dim =Reverse@ImageDimensions@img,
+stringentQ=OptionValue["stringentCheck"]},
+Module[{pts,members,vertices,nearest,vertexset,likelymergers,imagegraph,imggraphweight,imggraphpts,vertexpairs,
 posVertexMergers,meanVertices,Fn},
 pts = PixelValuePositions[MorphologicalTransform[img,{"Fill","SkeletonBranchPoints"}], 1]; (* finding branch points *)
 
-If[!OptionValue["watershed"],segC=Dilation[segC,dilSeg]]; (* dilate if connected components was used for segmentation *)
-
 members = Block[{spArray,elems},
  elems = SparseArray[{First@dim-Last@#,First@#}->1,dim];
- spArray = SparseArray[ImageData@Dilation[Image@elems,maskDil]]*segC;
+ spArray = SparseArray[ImageData@Dilation[Image@elems,maskDil]]*segt;
  Round@Union@spArray["NonzeroValues"]
  ]&/@pts;
  
@@ -70,7 +49,7 @@ Fn = GroupBy[MapAt[Sort,(#-> nearest[#,{All,2}]&/@Values[vertices]),{All,2}],Las
 
 Which[Not@stringentQ,
  (* merge if candidate vertices are 2 manhattan blocks away. Not a stringent check for merging *)
- KeyMap[Union@*Flatten]@Fn[N@*Mean]//Normal,
+ KeyMap[Union@*Flatten]@Fn[List@*N@*Mean]//Normal,
  stringentQ,
  (* a better check is to see the pixels separating the vertices are less than 3 blocks *)
  vertexset = Fn[Identity];
@@ -85,7 +64,7 @@ Which[Not@stringentQ,
  (* find pairs < than 3 edgeweights away, take a mean of vertices and update the association with mean position *)
  posVertexMergers = Position[Thread[Lookup[imggraphweight,vertexpairs]<3],True];
  If[posVertexMergers != {},
-  meanVertices=MapAt[N@*Mean,likelymergers,Thread[{Flatten@posVertexMergers,2}]];
+  meanVertices=MapAt[List@*N@*Mean,likelymergers,Thread[{Flatten@posVertexMergers,2}]];
   Scan[(vertexset[#[[1]]]=#[[2]])&,meanVertices]
   ];
   KeyMap[Union@*Flatten]@vertexset//Normal]
