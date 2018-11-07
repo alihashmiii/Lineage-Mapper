@@ -33,13 +33,20 @@ associateVertices[img_,segt_,maskDil_:2,OptionsPattern[]]:= With[{dim =Reverse@I
 stringentQ=OptionValue["stringentCheck"]},
 Module[{pts,members,vertices,nearest,vertexset,likelymergers,imagegraph,imggraphweight,imggraphpts,vertexpairs,
 posVertexMergers,meanVertices,Fn},
-pts = PixelValuePositions[MorphologicalTransform[img,{"Fill","SkeletonBranchPoints"}], 1]; (* finding branch points *)
 
+pts = PixelValuePositions[MorphologicalTransform[img,{"Fill","SkeletonBranchPoints"}], 1]; (* finding branch points *)
 members = Block[{spArray,elems},
  elems = SparseArray[{First@dim-Last@#,First@#}->1,dim];
  spArray = SparseArray[ImageData@Dilation[Image@elems,maskDil]]*segt;
  Round@Union@spArray["NonzeroValues"]
  ]&/@pts;
+ 
+(*pts = ImageValuePositions[MorphologicalTransform[img,{"Fill","SkeletonBranchPoints"}], 1]; (* finding branch points *)
+members = Block[{elems},
+ elems = Dilation[ReplaceImageValue[ConstantImage[0,Reverse@dim],#->1],1];
+ DeleteCases[Union@Flatten@ImageData[elems*Image[segt]],0.]
+ ]&/@pts;
+*)
  
 vertices = Cases[Thread[Round@members-> pts],HoldPattern[pattern:{__}/;Length@pattern >= 3 -> _]];
 (* finding vertices with three or more neighbouring cells *)
