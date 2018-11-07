@@ -18,6 +18,11 @@ BeginPackage["edgetrack`"]
 
 trackedEdgeMask::usage = "generate mask of an edge between two cells";
 plotEdge::usage = "plot of the tracked edge on the colorized segmented matrix";
+ClearAll[edgeAssociation];
+segmentEdgesHelper;
+segmentEdges;
+edgeAssoc;
+trackEdgebetweenCells;
 
 
 Begin["`Private`"] (* `Private` *)
@@ -33,18 +38,17 @@ segmentEdgesHelper[img_]:= Module[{imagetemp},
 ];
 
 
-segmentEdges[labeledMat_]:= Module[{img},
-  img = Binarize[Thinning@Closing[MorphologicalPerimeter[Colorize[labeledMat]],2]]; (* create binarized edge mask *)
-  {img,Sow@segmentEdgesHelper[img]}
+segmentEdges[img_]:= Module[{imgb},
+  imgb = Binarize[img];
+  {imgb,Sow@segmentEdgesHelper[imgb]}
 ];
 
-
 (* creates edge -> cell linkage i.e. edge label -> cell(s) bordering it *)
-edgeAssoc[labeledMat_]:= Module[{cellM,edgeMat,img,maxCell,totalMat,smalledges,edgetocell,position,
+edgeAssoc[{labeledMat_,img_}]:= Module[{cellM,edgeMat,imgb,maxCell,totalMat,smalledges,edgetocell,position,
 relabeledgetocell,edgetocellfinal},
   cellM = labeledMat;
-  {img,edgeMat} = segmentEdges@labeledMat; (* edge-mask and EdgeComponentMatrix*)
-  cellM = (ImageData[ColorNegate[img]] cellM)//Dilation[Erosion[#,1],1]&; (*cell component matrix *)
+  {imgb,edgeMat} = segmentEdges@img; (* edge-mask and EdgeComponentMatrix*)
+  cellM = (ImageData[ColorNegate[imgb]] cellM); (*cell component matrix *)
   maxCell = Max[cellM]; (* maximum cell label *)
   edgeMat = Map[If[# != 0,# + maxCell, #]&, edgeMat, {2}]; (* relabel the edge matrix *)
   totalMat = edgeMat + cellM; (* sum of edge and cell component matrix *)
@@ -58,8 +62,7 @@ relabeledgetocell,edgetocellfinal},
 
 
 SetAttributes[edgeAssociation, {HoldFirst}];
-edgeAssociation[segments_] := edgeAssociation[segments] =  Reap[ParallelTable[edgeAssoc[l],{l,segments}] ];
-
+edgeAssociation[segments_,images_]:=edgeAssociation[segments]=Reap@ParallelTable[edgeAssoc[l],{l,Thread[{segments,images}]}];
 
 (* ::Subsubsection:: *)
 (*track shape/mask of an edge between shared cells*)
@@ -94,24 +97,6 @@ Composition[First,Last]@edgeAssociation[Unevaluated@segstacks]},
 
 (* ::Subsubsection:: *)
 (*visualize edge track*)
-
-
-(*
-(*highlight edge on the colorized cell component matrix*)
-SetAttributes[plotEdge,{HoldFirst}];
-plotEdge[segstacks_, cell1_, cell2_] := First@Last@Reap@With[{edgeAssignMat =
-Composition[First,Last]@edgeAssociation[Unevaluated@segstacks],
-edgeCellLink = First@edgeAssociation[segstacks]},
-Module[{tracked,frame, elem, edgematrix, labelcellMat},
-   tracked = trackEdgebetweenCells[edgeCellLink,cell1,cell2];
-   Do[
-   {frame,elem}={Keys[i],Values[i]};
-   {edgematrix,labelcellMat} = {Part[edgeAssignMat,frame],Part[segstacks,frame]};
-   Sow[Colorize[labelcellMat] ~ HighlightImage ~ Image@ComponentMeasurements[edgematrix,"Mask"][[elem,2]]],
-   {i,tracked}];
-   ]
-];
-*)
 
 
 (* highlight edge on the colorized cell component matrix *)
