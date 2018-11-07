@@ -150,7 +150,6 @@ confidenceIndex[seg_,mincelllife_:32,dilationfact_:2]:= Block[{a,b,c},
  c = gWrapper[seg, #, "Label",If[#>=mincelllife, 1, 0]&@*Length];
  Dataset@ReverseSort[(a + b + c + 1.0)/4]
 ]
-
 apoptoticCells[seg_,minlifeThresh_:32,celldeathdelta_:10]:=Module[{sizeD, centD, cellspan ,cellspankeys, mean,sizediff, 
 highestframenum,pos,filtered,frame,meandistcomp,lookup},
  sizeD = gWrapper[seg,#,"Count",Identity];
@@ -162,11 +161,11 @@ highestframenum,pos,filtered,frame,meandistcomp,lookup},
  sizediff = BlockMap[EuclideanDistance[Sequence@@#]&,#,2,1]&/@lookup;
  highestframenum = MapThread[Position[#,x_/;x<#2]/.{}-> {{}}&,{sizediff,mean}]/.{x:{__Integer}..}:>First@*Last@{x} +1;
  pos = Position[Thread[(Values@cellspan - highestframenum +1) > minlifeThresh],True];
- filtered = FilterRules[centD,Extract[cellspankeys,pos]];
+ filtered = FilterRules[Normal@centD,Extract[cellspankeys,pos]];
  frame = Extract[highestframenum,pos];
- meandistcomp = MapThread[First@#1 ->Mean@BlockMap[EuclideanDistance[Sequence@@#]&,(Last@#1 )[[#2;;]],2,1]& ,{filtered,frame}];
- Dataset@Keys@Cases[meandistcomp,HoldPattern[_ -> x_] /;x <= celldeathdelta,\[Infinity]]
-];
+ meandistcomp = MapThread[First@#1 ->Mean@BlockMap[EuclideanDistance[Sequence@@#]&,(Last@#1 )[[#2;;]],2,1]&,{filtered,frame}];
+ Replace[Cases[meandistcomp,HoldPattern[_ -> x_] /;x <= celldeathdelta,\[Infinity]], apop:Except[{},_] :> Dataset@Keys[apop]]
+ ];
 
 End[];
 
