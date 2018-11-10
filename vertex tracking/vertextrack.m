@@ -51,14 +51,14 @@ members = Block[{elems},
 vertices = Cases[Thread[Round@members-> pts],HoldPattern[pattern:{__}/;Length@pattern >= 3 -> _]];
 (* finding vertices with three or more neighbouring cells *)
 
-nearest = Nearest[Reverse[vertices, 2],DistanceFunction->ManhattanDistance]; (* nearest func for candidate vertices *)
+nearest = Nearest[Reverse[vertices, 2]]; (* nearest func for candidate vertices *)
 Fn = GroupBy[MapAt[Sort,(#-> nearest[#,{All,2}]&/@Values[vertices]),{All,2}],Last->First,#]&;
 
 Which[Not@stringentQ,
- (* merge if candidate vertices are 2 manhattan blocks away. Not a stringent check for merging *)
+ (* merge if candidate vertices are 2 euclidean distance away. Not a stringent check for merging *)
  KeyMap[Union@*Flatten]@Fn[List@*N@*Mean]//Normal,
  stringentQ,
- (* a better check is to see the pixels separating the vertices are less than 3 blocks *)
+ (* a better check is to see the non-zero pixels separating the vertices are less than 3 away *)
  vertexset = Fn[Identity];
  (* candidates for merging*)
  likelymergers = Cases[Normal[vertexset],PatternSequence[{{__Integer}..}-> i:{__List}/;Length[i]>= 2]];
@@ -69,7 +69,7 @@ Which[Not@stringentQ,
  (* corresponding nodes on the graph *)
  vertexpairs = Union@*Flatten@*imggraphpts/@(Values[likelymergers]);
  (* find pairs < than 3 edgeweights away, take a mean of vertices and update the association with mean position *)
- posVertexMergers = Position[Thread[Lookup[imggraphweight,vertexpairs]<3],True];
+ posVertexMergers = Position[Thread[Lookup[imggraphweight,vertexpairs] < 3],True];
  If[posVertexMergers != {},
   meanVertices=MapAt[List@*N@*Mean,likelymergers,Thread[{Flatten@posVertexMergers,2}]];
   Scan[(vertexset[#[[1]]]=#[[2]])&,meanVertices]
