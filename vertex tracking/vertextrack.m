@@ -17,6 +17,7 @@
 
 BeginPackage["vertextrack`"]
 
+LaunchKernels[];
 
 trackVertices::usage = "trackVertices[images_,segments_] takes the sequence of binarized images and tracked labeled matrices and
 outputs a list of vertices corresponding to the different cells";
@@ -80,6 +81,7 @@ Which[Not@stringentQ,
 
 
 trackVertices[image_Image,segment_]:= associateVertices[image, segment];
+DistributeDefinitions[associateVertices];
 trackVertices[images_,segments_]:= ParallelTable[associateVertices[images[[i]], segments[[i]]],{i,1,Length@images}];
 
 
