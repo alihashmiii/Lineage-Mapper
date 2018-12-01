@@ -17,6 +17,7 @@
 
 BeginPackage["vertextrack`"]
 
+
 LaunchKernels[];
 
 trackVertices::usage = "trackVertices[images_,segments_] takes the sequence of binarized images and tracked labeled matrices and
