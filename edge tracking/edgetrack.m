@@ -32,25 +32,29 @@ Begin["`Private`"] (* `Private` *)
 (*Edge Tracking*)
 
 
+(* ::Code::Initialization:: *)
 segmentEdgesHelper[img_]:= Module[{imagetemp},
-  imagetemp = ImageFilter[If[#[[3,3]] == 1 && Total[#[[2;;-2,2;;-2]],2]==3,1,0]&,img,2]; (* create edge component matrix *)
-  MorphologicalComponents[imagetemp]
+(* create edge component matrix *)
+imagetemp = ImageFilter[If[#[[3,3]] == 1 && Total[#[[2;;-2,2;;-2]],2] == 3, 1, 0]&,img,2]; 
+MorphologicalComponents@imagetemp
 ];
 
 
 segmentEdges[img_]:= Module[{imgb},
-  imgb = Binarize[img];
-  {imgb,Sow@segmentEdgesHelper[imgb]}
+  imgb = Binarize[img]; (* create binarized edge mask *)
+  {imgb,segmentEdgesHelper[imgb]}
 ];
 
+
 (* creates edge -> cell linkage i.e. edge label -> cell(s) bordering it *)
-edgeAssoc[{labeledMat_,img_}]:= Module[{cellM,edgeMat,imgb,maxCell,totalMat,smalledges,edgetocell,position,
+edgeAssoc[{labeledMat_,img_}]:=Module[{cellM,edgeMat,imgb,maxCell,totalMat,smalledges,edgetocell,position,
 relabeledgetocell,edgetocellfinal},
   cellM = labeledMat;
   {imgb,edgeMat} = segmentEdges@img; (* edge-mask and EdgeComponentMatrix*)
+Sow@edgeMat;
   cellM = (ImageData[ColorNegate[imgb]] cellM); (*cell component matrix *)
   maxCell = Max[cellM]; (* maximum cell label *)
-  edgeMat = Map[If[# != 0,# + maxCell, #]&, edgeMat, {2}]; (* relabel the edge matrix *)
+  edgeMat = Map[If[#!= 0,# + maxCell, #]&, edgeMat, {2}]; (* relabel the edge matrix *)
   totalMat = edgeMat + cellM; (* sum of edge and cell component matrix *)
   smalledges = Keys@ComponentMeasurements[edgeMat, #Count <= 3 &]; (* small edges <=3 pixels to be excluded later *)
   edgetocell = Select[ComponentMeasurements[totalMat,"ExteriorNeighbors"],(First@# > maxCell &)]; (* edge -> cell linkage *)
@@ -61,8 +65,12 @@ relabeledgetocell,edgetocellfinal},
 ];
 
 
+DistributeDefinitions[edgeAssoc];
 SetAttributes[edgeAssociation, {HoldFirst}];
-edgeAssociation[segments_,images_]:=edgeAssociation[segments]=Reap@ParallelTable[edgeAssoc[l],{l,Thread[{segments,images}]}];
+edgeAssociation[segments_,images_] := edgeAssociation[segments] =MapAt[Flatten[#,2]&,
+Transpose@ParallelTable[Reap@edgeAssoc[l],{l,Thread[{segments,images}]}],{2}
+];
+
 
 (* ::Subsubsection:: *)
 (*track shape/mask of an edge between shared cells*)
@@ -80,7 +88,7 @@ Thread[Map[First]@position -> Keys@Extract[sharededges,position]]
 SetAttributes[trackedEdgeMask,{HoldFirst}];
 Options[trackedEdgeMask]={"property"-> "Shape"};
 trackedEdgeMask[segstacks_, cell1_, cell2_, OptionsPattern[]]:= With[{edgeAssignMat = 
-Composition[First,Last]@edgeAssociation[Unevaluated@segstacks]},
+Last@edgeAssociation[Unevaluated@segstacks]},
     Module[{edgeToCellLinkage = First@edgeAssociation[segstacks]},
     First@Last@Reap[
       Module[{tracked = trackEdgebetweenCells[edgeToCellLinkage,cell1,cell2],frame,elem,
@@ -101,7 +109,7 @@ Composition[First,Last]@edgeAssociation[Unevaluated@segstacks]},
 
 (* highlight edge on the colorized cell component matrix *)
 SetAttributes[plotEdge,{HoldFirst}];
-plotEdge[segstacks_, cell1_, cell2_] := With[{edgeAssignMat = Composition[First,Last]@edgeAssociation[Unevaluated@segstacks],
+plotEdge[segstacks_,images_, cell1_, cell2_] := With[{edgeAssignMat=Last@edgeAssociation[Unevaluated@segstacks,images],
 edgeCellLink = First@edgeAssociation[segstacks]},
 Module[{tracked,frame, elem, edgematrix, labelcellMat},
    tracked = trackEdgebetweenCells[edgeCellLink,cell1,cell2];
@@ -114,6 +122,5 @@ Module[{tracked,frame, elem, edgematrix, labelcellMat},
 ];
 
 
-End[] 
-
-EndPackage[]
+End[]; 
+EndPackage[];
